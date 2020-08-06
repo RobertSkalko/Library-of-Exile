@@ -9,6 +9,7 @@ public class ExileEvents {
     public static ExileEventCaller<OnEntityTick> LIVING_ENTITY_TICK = new ExileEventCaller<>();
     public static ExileEventCaller<OnMobExpDrop> MOB_EXP_DROP = new ExileEventCaller<>();
     public static ExileEventCaller<OnMobDeath> MOB_DEATH = new ExileEventCaller<>();
+    public static ExileEventCaller<OnMobDeath> PLAYER_DEATH = new ExileEventCaller<>();
     public static ExileEventCaller<OnMobKilledByPlayer> MOB_KILLED_BY_PLAYER = new ExileEventCaller<>();
     public static ExileEventCaller<OnSetupLootChance> SETUP_LOOT_CHANCE = new ExileEventCaller<>();
 

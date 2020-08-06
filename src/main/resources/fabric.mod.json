@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "library_of_exile",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Library of Exile",
   "description": "Library mod that allows all my mods to connect.",
   "authors": [
@@ -30,8 +30,6 @@
     "fabricloader": ">=0.9.0",
     "fabric": ">=0.15.0",
     "minecraft": "1.16.1",
-	"cloth-config2": "*",
-	"autoconfig1u": "*",
 	"cardinal-components-base": ">=2.4.2",
 	"cardinal-components-entity": ">=2.4.2",
 	"cardinal-components-world": ">=2.4.2"
