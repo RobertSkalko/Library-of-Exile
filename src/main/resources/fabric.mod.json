@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "library_of_exile",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "Library of Exile",
   "description": "Library mod that allows all my mods to connect.",
   "authors": [
