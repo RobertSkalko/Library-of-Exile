@@ -31,7 +31,8 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	
+    //modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 
 	//APIs
@@ -44,10 +45,17 @@ dependencies {
     modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-world:${cardinal_version}"
     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-world:${cardinal_version}"
 	
-    modApi "me.shedaniel.cloth:config-2:${config_api_version}"
+	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-chunk:${cardinal_version}"
+    include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-chunk:${cardinal_version}"	
+	
+    modApi ("me.shedaniel.cloth:config-2:${config_api_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     include "me.shedaniel.cloth:config-2:${config_api_version}"
 	
-    modApi "me.sargunvohra.mcmods:autoconfig1u:${auto_config_version}"
+    modApi ("me.sargunvohra.mcmods:autoconfig1u:${auto_config_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+    }
     include "me.sargunvohra.mcmods:autoconfig1u:${auto_config_version}"	
 	
 }
@@ -100,7 +108,7 @@ curseforge {
         releaseType = "${curse_release}"
         changelogType = 'text'
         changelog = file('CHANGELOG.txt')
-        addGameVersion("1.16.1")
+        addGameVersion("${project.minecraft_version}")
         addGameVersion("Fabric")
         addGameVersion("Java 8")
 
