@@ -12,9 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ServerPlayerMixin {
 
     // server player overrides ondeath method, so we need thid specific mixin
+    // keep the try catch cus any exception removes all player death items!!!
     @Inject(method = "onDeath", at = @At("HEAD"))
     private void myhookOnDeath(DamageSource source, CallbackInfo ci) {
-        ServerPlayerEntity victim = (ServerPlayerEntity) (Object) this;
-        ExileEvents.PLAYER_DEATH.callEvents(new ExileEvents.OnMobDeath(victim));
+        try {
+            ServerPlayerEntity victim = (ServerPlayerEntity) (Object) this;
+            ExileEvents.PLAYER_DEATH.callEvents(new ExileEvents.OnPlayerDeath(victim));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

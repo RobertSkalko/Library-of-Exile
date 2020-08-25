@@ -12,6 +12,8 @@ public class CommonInit implements ModInitializer {
 
         ExileEvents.DAMAGE_AFTER_CALC.register(new OnMobDamaged());
 
+        // ServerEntityEvents.ENTITY_LOAD.register(new OnMobSpawn());
+
         System.out.println("Library of Exile loaded.");
     }
 }

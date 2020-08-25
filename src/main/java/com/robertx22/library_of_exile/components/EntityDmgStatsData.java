@@ -18,16 +18,20 @@ public class EntityDmgStatsData {
     @Store
     private HashMap<String, Float> map = new HashMap<>();
 
-    public void onDamagedBy(LivingEntity entity, float dmg) {
+    @Store
+    private float enviroOrMobDmg = 0;
 
-        if (entity == null) {
-            return;
+    public float getEnviroOrMobDmg() {
+        return enviroOrMobDmg;
+    }
+
+    public void onDamagedBy(Entity entity, float dmg) {
+        if (entity instanceof PlayerEntity) {
+            String id = entity.getUuid()
+                .toString();
+            map.put(id, dmg + map.getOrDefault(id, 0F));
         } else {
-            if (entity instanceof PlayerEntity) {
-                String id = entity.getUuid()
-                    .toString();
-                map.put(id, dmg + map.getOrDefault(id, 0F));
-            }
+            enviroOrMobDmg += dmg;
         }
     }
 

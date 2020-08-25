@@ -9,7 +9,7 @@ public class ExileEvents {
     public static ExileEventCaller<OnEntityTick> LIVING_ENTITY_TICK = new ExileEventCaller<>();
     public static ExileEventCaller<OnMobExpDrop> MOB_EXP_DROP = new ExileEventCaller<>();
     public static ExileEventCaller<OnMobDeath> MOB_DEATH = new ExileEventCaller<>();
-    public static ExileEventCaller<OnMobDeath> PLAYER_DEATH = new ExileEventCaller<>();
+    public static ExileEventCaller<OnPlayerDeath> PLAYER_DEATH = new ExileEventCaller<>();
     public static ExileEventCaller<OnMobKilledByPlayer> MOB_KILLED_BY_PLAYER = new ExileEventCaller<>();
     public static ExileEventCaller<OnSetupLootChance> SETUP_LOOT_CHANCE = new ExileEventCaller<>();
 
@@ -48,9 +48,20 @@ public class ExileEvents {
 
     public static class OnMobDeath extends ExileEvent {
         public LivingEntity mob;
+        public LivingEntity killer;
 
-        public OnMobDeath(LivingEntity mob) {
+        public OnMobDeath(LivingEntity mob, LivingEntity killer) {
             this.mob = mob;
+            this.killer = killer;
+        }
+    }
+
+    public static class OnPlayerDeath extends ExileEvent {
+        public PlayerEntity player;
+        public LivingEntity killer;
+
+        public OnPlayerDeath(PlayerEntity player) {
+            this.player = player;
         }
     }
 

@@ -14,26 +14,44 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "onKilledBy", at = @At("HEAD"))
     public void hookOnDeath(LivingEntity adversary, CallbackInfo ci) {
-        LivingEntity victim = (LivingEntity) (Object) this;
-        ExileEvents.MOB_DEATH.callEvents(new ExileEvents.OnMobDeath(victim));
+        try {
+            LivingEntity victim = (LivingEntity) (Object) this;
+            ExileEvents.MOB_DEATH.callEvents(new ExileEvents.OnMobDeath(victim, adversary));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Inject(method = "tick()V", at = @At("HEAD"))
     public void hookOnTick(CallbackInfo ci) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        ExileEvents.LIVING_ENTITY_TICK.callEvents(new ExileEvents.OnEntityTick(entity));
+        try {
+            LivingEntity entity = (LivingEntity) (Object) this;
+            ExileEvents.LIVING_ENTITY_TICK.callEvents(new ExileEvents.OnEntityTick(entity));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @ModifyVariable(method = "damage", at = @At("HEAD"), argsOnly = true)
     public float hookOnDamage(float amount, DamageSource source) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        return ExileEvents.DAMAGE_BEFORE_CALC.callEvents(new ExileEvents.OnDamageEntity(source, amount, entity)).damage;
+        try {
+            LivingEntity entity = (LivingEntity) (Object) this;
+            return ExileEvents.DAMAGE_BEFORE_CALC.callEvents(new ExileEvents.OnDamageEntity(source, amount, entity)).damage;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return amount;
     }
 
     @ModifyVariable(method = "damage", at = @At("TAIL"), argsOnly = true)
     public float hookAfterDamage(float amount, DamageSource source) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        return ExileEvents.DAMAGE_AFTER_CALC.callEvents(new ExileEvents.OnDamageEntity(source, amount, entity)).damage;
+        try {
+            LivingEntity entity = (LivingEntity) (Object) this;
+            return ExileEvents.DAMAGE_AFTER_CALC.callEvents(new ExileEvents.OnDamageEntity(source, amount, entity)).damage;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return amount;
     }
 
 }
