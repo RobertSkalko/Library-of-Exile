@@ -1,3 +1,6 @@
+v.1.0.3
+added more of my utilities in
+
 v.1.0.2
 Jar in Jared 2 config api mods and cardinal components to make it easier to install for non twitch app users.
 

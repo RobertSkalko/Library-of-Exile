@@ -46,7 +46,7 @@ public abstract class BaseTileContainer extends ScreenHandler {
     }
 
     public boolean isPlayerInventory(int index) {
-        return index <= this.slots.size() - size;
+        return index >= getPlayerInvStart() && index <= getPlayerInvEnd();
     }
 
     public int getPlayerInvStart() {
@@ -54,7 +54,7 @@ public abstract class BaseTileContainer extends ScreenHandler {
     }
 
     public int getPlayerInvEnd() {
-        return this.slots.size() - size;
+        return this.slots.size() - size - 1;
     }
 
     public int getContainerStart() {
