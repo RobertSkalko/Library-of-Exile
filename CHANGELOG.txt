@@ -1,3 +1,6 @@
+v1.0.4
+- 1.16.3 should work now
+
 v.1.0.3
 added more of my utilities in
 
