@@ -21,7 +21,12 @@ public abstract class MyPacket<T> implements PacketConsumer {
     public void accept(PacketContext ctx, PacketByteBuf buf) {
 
         MyPacket<T> data = newInstance();
-        data.loadFromData(buf);
+
+        try {
+            data.loadFromData(buf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         ctx.getTaskQueue()
             .execute(() -> {
