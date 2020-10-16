@@ -54,4 +54,14 @@ public abstract class LivingEntityMixin {
         return amount;
     }
 
+    @Inject(method = "applyDamage", at = @At("HEAD"))
+    public void hookOnTick(DamageSource source, float amount, CallbackInfo ci) {
+        try {
+            LivingEntity entity = (LivingEntity) (Object) this;
+            ExileEvents.DAMAGE_BEFORE_APPLIED.callEvents(new ExileEvents.OnDamageEntity(source, amount, entity));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

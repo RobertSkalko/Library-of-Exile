@@ -15,6 +15,7 @@ public class ExileEvents {
 
     public static ExileEventCaller<OnDamageEntity> DAMAGE_BEFORE_CALC = new ExileEventCaller<>();
     public static ExileEventCaller<OnDamageEntity> DAMAGE_AFTER_CALC = new ExileEventCaller<>();
+    public static ExileEventCaller<OnDamageEntity> DAMAGE_BEFORE_APPLIED = new ExileEventCaller<>();
 
     public static class OnEntityTick extends ExileEvent {
         public LivingEntity entity;

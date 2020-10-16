@@ -1,14 +1,3 @@
-v1.0.4
-- 1.16.3 should work now
-
-v.1.0.3
-added more of my utilities in
-
-v.1.0.2
-Jar in Jared 2 config api mods and cardinal components to make it easier to install for non twitch app users.
-
-v.1.0.1 added an event
-
-v.1.0.0
-
-Initial release
+v.1.0.5
+- add safety to packet loading
+- added spawnreason to mob info (for my balance of exile next patch)

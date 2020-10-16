@@ -24,7 +24,7 @@ public class ServerWorldMixin {
             if (!this.inEntityTick) { // Copy vanilla logic, we cannot load entities while the game is ticking entities
                 if (entity instanceof LivingEntity) {
                     Components.INSTANCE.ENTITY_INFO.get(entity)
-                        .setBlockPosOnSpawn();
+                        .spawnInit();
                 }
             }
         } catch (Exception e) {
