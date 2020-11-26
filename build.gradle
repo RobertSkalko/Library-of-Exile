@@ -48,6 +48,9 @@ dependencies {
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-chunk:${cardinal_version}"
     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-chunk:${cardinal_version}"	
 	
+	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-block:${cardinal_version}"
+    include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-block:${cardinal_version}"
+		
     modApi ("me.shedaniel.cloth:config-2:${config_api_version}"){
         exclude(group: "net.fabricmc.fabric-api")
     }

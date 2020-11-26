@@ -8,5 +8,6 @@ public class ClientInit implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         S2CPacketRegister.register();
+
     }
 }
