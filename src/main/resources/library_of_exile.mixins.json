@@ -5,6 +5,7 @@
   "mixins": [
     "LivingEntityMixin",
     "MobEntityMixin",
+    "PlayerManagerMixin",
     "ServerPlayerMixin",
     "ServerWorldMixin"
   ],

@@ -4,10 +4,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
-
-
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
@@ -89,7 +86,7 @@ public abstract class HandleGenericType<T> implements IHandler<T> {
   }
 
   @SuppressWarnings("unchecked")
-  protected final void storeRecursive(int param, Registry registry, Set<NBTAction> phase, CompoundTag nbt, String name, Object object)
+  protected final void storeRecursive(int param, Registry registry, Set<NBTAction> phase, NbtCompound nbt, String name, Object object)
       throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
     for (IHandler handler : subHandlers[param]) {
       if (handler.store(registry, phase, nbt, types[param], name, object)) {
@@ -99,7 +96,7 @@ public abstract class HandleGenericType<T> implements IHandler<T> {
   }
 
   @SuppressWarnings({ "unchecked"})
-  protected final <V> V readRecursive(int param, Registry registry, Set<NBTAction> phase, CompoundTag nbt, String name, V object)
+  protected final <V> V readRecursive(int param, Registry registry, Set<NBTAction> phase, NbtCompound nbt, String name, V object)
       throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
     for (IHandler handler : subHandlers[param]) {
       V result = (V) handler.read(registry, phase, nbt, types[param], name, object);

@@ -4,7 +4,7 @@ import com.robertx22.library_of_exile.main.MyPacket;
 import com.robertx22.library_of_exile.main.Ref;
 import com.robertx22.library_of_exile.utils.LoadSave;
 import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
@@ -30,15 +30,15 @@ public class ParticlePacket extends MyPacket<ParticlePacket> {
 
     @Override
     public void loadFromData(PacketByteBuf tag) {
-        data = LoadSave.Load(ParticlePacketData.class, ParticlePacketData.empty(), tag.readCompoundTag(), LOC);
+        data = LoadSave.Load(ParticlePacketData.class, ParticlePacketData.empty(), tag.readNbt(), LOC);
 
     }
 
     @Override
     public void saveToData(PacketByteBuf tag) {
-        CompoundTag nbt = new CompoundTag();
+        NbtCompound nbt = new NbtCompound();
         LoadSave.Save(data, nbt, LOC);
-        tag.writeCompoundTag(nbt);
+        tag.writeNbt(nbt);
 
     }
 

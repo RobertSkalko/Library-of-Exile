@@ -1,10 +1,2 @@
-v.1.0.7
-* better biome configs
-
-v.1.0.6
-* downgraded cardinal version temporarily
-
-v.1.0.5
-- add safety to packet loading
-- added spawnreason to mob info (for my balance of exile next patch)
-- updated versions
+v.1.0.12
+* Try fix teleport util

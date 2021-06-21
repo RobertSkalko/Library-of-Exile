@@ -5,12 +5,11 @@ import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.handlers.java.util.HandleMap;
 import info.loenwind.autosave.util.*;
-import net.minecraft.nbt.CompoundTag;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.Set;
+import net.minecraft.nbt.NbtCompound;
 
 /**
  * This is a specialized version of {@link HandleEnumMap}, for maps with enum values as well.
@@ -95,7 +94,7 @@ public class HandleEnum2EnumMap<T extends Enum<T>> extends HandleMap<EnumMap<T, 
     }
 
     @Override
-    public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+    public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
                          EnumMap<T, Enum> object) throws IllegalArgumentException, IllegalAccessException,
         InstantiationException, NoHandlerFoundException {
         long value = 0;
@@ -117,7 +116,7 @@ public class HandleEnum2EnumMap<T extends Enum<T>> extends HandleMap<EnumMap<T, 
     }
 
     @Override
-    public EnumMap read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+    public EnumMap read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
                         EnumMap<T, Enum> object) throws IllegalArgumentException, IllegalAccessException,
         InstantiationException, NoHandlerFoundException {
         if (nbt.contains(name)) {

@@ -3,9 +3,7 @@ package info.loenwind.autosave.handlers.java;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.Set;
-
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.engine.StorableEngine;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
@@ -40,9 +38,9 @@ public class HandleEnumMap<K extends Enum<K>> extends HandleMap<EnumMap<K, ?>>{
   }
 
   @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+  public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
       EnumMap<K, ?> object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    CompoundTag tag = new CompoundTag();
+    NbtCompound tag = new NbtCompound();
     for (K key : enumValues) {
       Object val = object.get(key);
       String keystr = NullHelper.notnullJ(Integer.toString(key.ordinal()), "Integer.toString is null");
@@ -57,14 +55,14 @@ public class HandleEnumMap<K extends Enum<K>> extends HandleMap<EnumMap<K, ?>>{
   }
 
   @Override
-  public EnumMap<K, ?> read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type,
+  public EnumMap<K, ?> read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type,
       String name, EnumMap<K, ?> object)
       throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
     if (nbt.contains(name)) {
       if (object == null) {
         object = createMap();
       }
-      CompoundTag tag = nbt.getCompound(name);
+      NbtCompound tag = nbt.getCompound(name);
       for (K key : enumValues) {
         String keystr = NullHelper.notnullJ(Integer.toString(key.ordinal()), "Integer.toString is null");
         if (!tag.getBoolean(keystr + StorableEngine.NULL_POSTFIX)) {

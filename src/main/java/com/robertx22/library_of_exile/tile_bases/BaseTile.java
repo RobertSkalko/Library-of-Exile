@@ -6,8 +6,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
@@ -252,15 +252,15 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag parentNBTTagCompound) {
-        super.toTag(parentNBTTagCompound); // The super call is required to save and load the tiles location
+    public NbtCompound writeNbt(NbtCompound parentNBTTagCompound) {
+        super.writeNbt(parentNBTTagCompound); // The super call is required to save and load the tiles location
 
-        ListTag dataForAllSlots = new ListTag();
+        NbtList dataForAllSlots = new NbtList();
         for (int i = 0; i < this.itemStacks.length; ++i) {
             if (!this.itemStacks[i].isEmpty()) { // isEmpty()
-                CompoundTag dataForThisSlot = new CompoundTag();
+                NbtCompound dataForThisSlot = new NbtCompound();
                 dataForThisSlot.putByte("Slot", (byte) i);
-                this.itemStacks[i].toTag(dataForThisSlot);
+                this.itemStacks[i].writeNbt(dataForThisSlot);
                 dataForAllSlots.add(dataForThisSlot);
             }
         }
@@ -278,17 +278,17 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
 
     // This is where you load the dataInstance that you saved in write
     @Override
-    public void fromTag(BlockState state, CompoundTag nbtTagCompound) {
+    public void fromTag(BlockState state, NbtCompound nbtTagCompound) {
         super.fromTag(state, nbtTagCompound); // The super call is required to save and load the tiles location
         final byte NBT_TYPE_COMPOUND = 10; // See NBTBase.createNewByType() for a listing
-        ListTag dataForAllSlots = nbtTagCompound.getList("Items", NBT_TYPE_COMPOUND);
+        NbtList dataForAllSlots = nbtTagCompound.getList("Items", NBT_TYPE_COMPOUND);
 
         Arrays.fill(itemStacks, ItemStack.EMPTY); // set all slots to empty EMPTY_ITEM
         for (int i = 0; i < dataForAllSlots.size(); ++i) {
-            CompoundTag dataForOneSlot = dataForAllSlots.getCompound(i);
+            NbtCompound dataForOneSlot = dataForAllSlots.getCompound(i);
             byte slotNumber = dataForOneSlot.getByte("Slot");
             if (slotNumber >= 0 && slotNumber < this.itemStacks.length) {
-                this.itemStacks[slotNumber] = ItemStack.fromTag(dataForOneSlot);
+                this.itemStacks[slotNumber] = ItemStack.fromNbt(dataForOneSlot);
             }
         }
 

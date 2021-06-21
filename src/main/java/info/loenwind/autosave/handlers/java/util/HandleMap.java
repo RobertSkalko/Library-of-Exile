@@ -6,13 +6,12 @@ import info.loenwind.autosave.engine.StorableEngine;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.util.HandleGenericType;
 import info.loenwind.autosave.util.NBTAction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 
 @SuppressWarnings({
     "rawtypes",
@@ -29,11 +28,11 @@ public abstract class HandleMap<T extends Map> extends HandleGenericType<T> {
     }
 
     @Override
-    public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name, T object)
+    public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, T object)
         throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-        ListTag tag = new ListTag();
+        NbtList tag = new NbtList();
         for (Entry e : (Set<Entry>) object.entrySet()) {
-            CompoundTag etag = new CompoundTag();
+            NbtCompound etag = new NbtCompound();
             Object key = e.getKey();
             if (key != null) {
                 storeRecursive(0, registry, phase, etag, "key", key);
@@ -53,7 +52,7 @@ public abstract class HandleMap<T extends Map> extends HandleGenericType<T> {
     }
 
     @Override
-    public T read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+    public T read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
                   T object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
         if (nbt.contains(name)) {
             if (object == null) {
@@ -62,9 +61,9 @@ public abstract class HandleMap<T extends Map> extends HandleGenericType<T> {
                 object.clear();
             }
 
-            ListTag tag = nbt.getList(name, NBTConstants.TAG_COMPOUND);
+            NbtList tag = nbt.getList(name, NBTConstants.TAG_COMPOUND);
             for (int i = 0; i < tag.size(); i++) {
-                CompoundTag etag = tag.getCompound(i);
+                NbtCompound etag = tag.getCompound(i);
                 Object key = etag.getBoolean("key" + StorableEngine.NULL_POSTFIX) ? null : readRecursive(0, registry, phase, etag, "key", null);
                 Object val = etag.getBoolean("val" + StorableEngine.NULL_POSTFIX) ? null : readRecursive(1, registry, phase, etag, "val", null);
                 object.put(key, val);

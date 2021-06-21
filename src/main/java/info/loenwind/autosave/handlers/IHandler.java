@@ -4,10 +4,9 @@ import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.util.NBTAction;
 import info.loenwind.autosave.util.TypeUtil;
-import net.minecraft.nbt.CompoundTag;
-
 import java.lang.reflect.Type;
 import java.util.Set;
+import net.minecraft.nbt.NbtCompound;
 
 /**
  * IHandlers convert objects into NBT and vice versa.
@@ -63,7 +62,7 @@ public interface IHandler<T> {
      * @throws InstantiationException
      * @throws NoHandlerFoundException
      */
-    boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type,
+    boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type,
                   String name,
                   T object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException;
 
@@ -99,7 +98,7 @@ public interface IHandler<T> {
      * @throws NoHandlerFoundException
      */
 
-    T read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type,
+    T read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type,
            String name,
            T object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException;
 }

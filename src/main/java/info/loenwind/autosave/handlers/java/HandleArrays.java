@@ -6,13 +6,12 @@ import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
 import info.loenwind.autosave.util.NullHelper;
 import info.loenwind.autosave.util.TypeUtil;
-import net.minecraft.nbt.CompoundTag;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.nbt.NbtCompound;
 
 @SuppressWarnings({
     "rawtypes",
@@ -50,9 +49,9 @@ public class HandleArrays implements IHandler<Object> {
     }
 
     @Override
-    public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name, Object object)
+    public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, Object object)
         throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-        CompoundTag tag = new CompoundTag();
+        NbtCompound tag = new NbtCompound();
         int size = Array.getLength(object);
         tag.putInt("size", size);
         for (int i = 0; i < size; i++) {
@@ -70,14 +69,14 @@ public class HandleArrays implements IHandler<Object> {
     }
 
     @Override
-    public Object read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name, Object object)
+    public Object read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, Object object)
         throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
         Type compType = componentType;
         if (compType == null) {
             return null;
         }
         if (nbt.contains(name)) {
-            CompoundTag tag = nbt.getCompound(name);
+            NbtCompound tag = nbt.getCompound(name);
             int size = tag.getInt("size");
 
             if (object == null) {

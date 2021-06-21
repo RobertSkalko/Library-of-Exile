@@ -3,9 +3,7 @@ package info.loenwind.autosave.handlers.java.util;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Set;
-
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
@@ -24,9 +22,9 @@ public abstract class HandleCollection<T extends Collection> extends HandleGener
   }
 
   @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name, T object)
+  public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, T object)
       throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    CompoundTag tag = new CompoundTag();
+    NbtCompound tag = new NbtCompound();
     tag.putInt("size", object.size());
     int i = 0;
     for (Object elem : object) {
@@ -42,7 +40,7 @@ public abstract class HandleCollection<T extends Collection> extends HandleGener
   }
 
   @Override
-  public T read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+  public T read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
       T object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
     if (nbt.contains(name)) {
       if (object == null) {
@@ -51,7 +49,7 @@ public abstract class HandleCollection<T extends Collection> extends HandleGener
         object.clear();
       }
 
-      CompoundTag tag = nbt.getCompound(name);
+      NbtCompound tag = nbt.getCompound(name);
       int size = tag.getInt("size");
       for (int i = 0; i < size; i++) {
         object.add(readRecursive(0, registry, phase, tag, i + "", null));

@@ -3,6 +3,7 @@ package com.robertx22.library_of_exile.events.base;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public class ExileEvents {
 
@@ -16,12 +17,39 @@ public class ExileEvents {
     public static ExileEventCaller<OnDamageEntity> DAMAGE_BEFORE_CALC = new ExileEventCaller<>();
     public static ExileEventCaller<OnDamageEntity> DAMAGE_AFTER_CALC = new ExileEventCaller<>();
     public static ExileEventCaller<OnDamageEntity> DAMAGE_BEFORE_APPLIED = new ExileEventCaller<>();
+    public static ExileEventCaller<OnCheckIsDevToolsRunning> CHECK_IF_DEV_TOOLS_SHOULD_RUN = new ExileEventCaller<>();
+    public static ExileEventCaller<AfterDatabaseLoaded> AFTER_DATABASE_LOADED = new ExileEventCaller<>();
+    public static ExileEventCaller<OnPlayerLogin> ON_PLAYER_LOGIN = new ExileEventCaller<>();
 
     public static class OnEntityTick extends ExileEvent {
         public LivingEntity entity;
 
         public OnEntityTick(LivingEntity entity) {
             this.entity = entity;
+        }
+    }
+
+    public static class OnCheckIsDevToolsRunning extends ExileEvent {
+        public Boolean run = false;
+
+        public OnCheckIsDevToolsRunning() {
+
+        }
+    }
+
+    public static class OnPlayerLogin extends ExileEvent {
+
+        public ServerPlayerEntity player;
+
+        public OnPlayerLogin(ServerPlayerEntity player) {
+            this.player = player;
+        }
+    }
+
+    public static class AfterDatabaseLoaded extends ExileEvent {
+
+        public AfterDatabaseLoaded() {
+
         }
     }
 

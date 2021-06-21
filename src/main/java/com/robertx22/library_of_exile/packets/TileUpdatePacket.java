@@ -5,7 +5,7 @@ import com.robertx22.library_of_exile.main.Ref;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockPos;
 public class TileUpdatePacket extends MyPacket<TileUpdatePacket> {
 
     public BlockPos pos;
-    public CompoundTag nbt;
+    public NbtCompound nbt;
 
     public TileUpdatePacket() {
 
@@ -21,7 +21,7 @@ public class TileUpdatePacket extends MyPacket<TileUpdatePacket> {
 
     public TileUpdatePacket(BlockEntity be) {
         this.pos = be.getPos();
-        this.nbt = be.toTag(new CompoundTag());
+        this.nbt = be.writeNbt(new NbtCompound());
     }
 
     @Override
@@ -32,14 +32,14 @@ public class TileUpdatePacket extends MyPacket<TileUpdatePacket> {
     @Override
     public void loadFromData(PacketByteBuf tag) {
         pos = tag.readBlockPos();
-        nbt = tag.readCompoundTag();
+        nbt = tag.readNbt();
 
     }
 
     @Override
     public void saveToData(PacketByteBuf tag) {
         tag.writeBlockPos(pos);
-        tag.writeCompoundTag(nbt);
+        tag.writeNbt(nbt);
 
     }
 

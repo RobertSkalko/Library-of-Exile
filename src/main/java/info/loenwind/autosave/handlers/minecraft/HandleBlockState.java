@@ -10,7 +10,7 @@ import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
 import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 
 public class HandleBlockState implements IHandler<BlockState> {
@@ -24,15 +24,15 @@ public class HandleBlockState implements IHandler<BlockState> {
   }
 
   @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name, BlockState object)
+  public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, BlockState object)
       throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    CompoundTag tag = NbtHelper.fromBlockState(object);
+    NbtCompound tag = NbtHelper.fromBlockState(object);
     nbt.put(name, tag);
     return true;
   }
 
   @Override
-  public BlockState read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+  public BlockState read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
       BlockState object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
     return NbtHelper.toBlockState(nbt.getCompound(name));
   }

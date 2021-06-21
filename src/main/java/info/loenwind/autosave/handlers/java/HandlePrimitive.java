@@ -2,10 +2,7 @@ package info.loenwind.autosave.handlers.java;
 
 import java.lang.reflect.Type;
 import java.util.Set;
-
-
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
@@ -16,13 +13,13 @@ public class HandlePrimitive<T> implements IHandler<T> {
 
   public interface WriterFunc<@NonnullType T> {
 
-    void set(CompoundTag tag, String name, T object);
+    void set(NbtCompound tag, String name, T object);
 
   }
 
   public interface ReaderFunc<@NonnullType T> {
 
-    T get(CompoundTag tag, String name);
+    T get(NbtCompound tag, String name);
 
   }
 
@@ -49,14 +46,14 @@ public class HandlePrimitive<T> implements IHandler<T> {
   }
 
   @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+  public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
       T object) throws IllegalArgumentException, IllegalAccessException {
     writer.set(nbt, name, object);
     return true;
   }
 
   @Override
-  public T read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+  public T read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
       T object) {
     return nbt.contains(name) ? reader.get(nbt, name) : object != null ? object : defaultValue;
   }

@@ -5,7 +5,7 @@ import com.robertx22.library_of_exile.utils.LoadSave;
 import nerdhub.cardinal.components.api.component.Component;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 public class EntityInfoComponent {
@@ -45,7 +45,7 @@ public class EntityInfoComponent {
         }
 
         @Override
-        public CompoundTag toTag(CompoundTag nbt) {
+        public NbtCompound toTag(NbtCompound nbt) {
 
             try {
 
@@ -67,7 +67,7 @@ public class EntityInfoComponent {
         }
 
         @Override
-        public void fromTag(CompoundTag nbt) {
+        public void fromTag(NbtCompound nbt) {
 
             try {
                 this.dmgStats = LoadSave.Load(EntityDmgStatsData.class, new EntityDmgStatsData(), nbt, DMG_STATS);

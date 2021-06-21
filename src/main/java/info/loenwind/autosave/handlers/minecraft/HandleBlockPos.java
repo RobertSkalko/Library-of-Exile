@@ -9,7 +9,7 @@ import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 public class HandleBlockPos implements IHandler<BlockPos> {
@@ -23,14 +23,14 @@ public class HandleBlockPos implements IHandler<BlockPos> {
   }
 
   @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name, BlockPos object)
+  public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, BlockPos object)
       throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
     nbt.putLong(name, object.asLong());
     return true;
   }
 
   @Override
-  public BlockPos read(Registry registry, Set<NBTAction> phase, CompoundTag nbt, Type type, String name,
+  public BlockPos read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
       BlockPos object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
     if (nbt.contains(name)) {
       return BlockPos.fromLong(nbt.getLong(name));
