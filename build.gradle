@@ -104,8 +104,6 @@ curseforge {
 
         relations {
             requiredDependency 'fabric-api'
-
-            optionalDependency 'age-of-exile'
         }
         mainArtifact(remapJar)
 

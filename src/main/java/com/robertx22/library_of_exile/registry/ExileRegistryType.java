@@ -61,19 +61,15 @@ public class ExileRegistryType {
         return list;
     }
 
-    public static void registerJsonListeners(ReloadableResourceManager manager, String modid) {
-        List<ExileRegistryType> list = new ArrayList<>(all).stream()
-            .filter(x -> x.modid.equals(modid))
-            .collect(Collectors.toList());
+    public static void registerJsonListeners(ReloadableResourceManager manager) {
+        List<ExileRegistryType> list = new ArrayList<>(all);
         list.sort(Comparator.comparingInt(x -> x.order));
-
         list
             .forEach(x -> {
                 if (x.getLoader() != null) {
                     manager.registerReloader(x.getLoader());
                 }
             });
-
     }
 
     public static void init() {

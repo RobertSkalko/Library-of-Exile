@@ -4,7 +4,9 @@ import java.util.function.Consumer;
 
 public abstract class EventConsumer<T extends ExileEvent> implements Consumer<T> {
 
-    // Less = call first, More = call later.
+    /**
+     * Less = call first, More = call later.
+     */
     public int callOrder() {
         return 0;
     }

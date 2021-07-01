@@ -12,7 +12,11 @@ public class ExileEventCaller<T extends ExileEvent> {
     }
 
     public T callEvents(T event) {
-        events.forEach(x -> x.accept(event));
+        events.forEach(x -> {
+            if (!event.canceled) {
+                x.accept(event);
+            }
+        });
         return event;
     }
 

@@ -3,7 +3,10 @@ package com.robertx22.library_of_exile.events.base;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class ExileEvents {
 
@@ -20,12 +23,37 @@ public class ExileEvents {
     public static ExileEventCaller<OnCheckIsDevToolsRunning> CHECK_IF_DEV_TOOLS_SHOULD_RUN = new ExileEventCaller<>();
     public static ExileEventCaller<AfterDatabaseLoaded> AFTER_DATABASE_LOADED = new ExileEventCaller<>();
     public static ExileEventCaller<OnPlayerLogin> ON_PLAYER_LOGIN = new ExileEventCaller<>();
+    public static ExileEventCaller<OnChestLooted> ON_CHEST_LOOTED = new ExileEventCaller<>();
+    public static ExileEventCaller<IsEntityKilledValid> IS_KILLED_ENTITY_VALID = new ExileEventCaller<>();
+    public static ExileEventCaller<RegisterRegistriesEvent> REGISTER_EXILE_REGISTRIES = new ExileEventCaller<>();
 
     public static class OnEntityTick extends ExileEvent {
         public LivingEntity entity;
 
         public OnEntityTick(LivingEntity entity) {
             this.entity = entity;
+        }
+    }
+
+    public static class IsEntityKilledValid extends OnMobDeath {
+        public boolean isValid = true;
+
+        public IsEntityKilledValid(LivingEntity mob, LivingEntity killer) {
+            super(mob, killer);
+        }
+    }
+
+    public static class OnChestLooted extends ExileEvent {
+        public PlayerEntity player;
+        public LootContext ctx;
+        public Inventory inventory;
+        public BlockPos pos;
+
+        public OnChestLooted(PlayerEntity player, LootContext ctx, Inventory inventory, BlockPos pos) {
+            this.player = player;
+            this.ctx = ctx;
+            this.inventory = inventory;
+            this.pos = pos;
         }
     }
 
