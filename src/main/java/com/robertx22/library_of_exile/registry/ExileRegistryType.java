@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.robertx22.library_of_exile.registry.loaders.BaseDataPackLoader;
 import com.robertx22.library_of_exile.registry.serialization.ISerializable;
 import net.minecraft.resource.ReloadableResourceManager;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -96,7 +95,7 @@ public class ExileRegistryType {
 
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(id);
+        return id.hashCode();
     }
 
     @Override
