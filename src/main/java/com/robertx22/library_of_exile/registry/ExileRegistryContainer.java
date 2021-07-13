@@ -223,7 +223,7 @@ public class ExileRegistryContainer<C extends ExileRegistry> {
             if (logMissingEntryOnAccess) {
                 if (accessorErrosAletedFor.contains(guid) == false) {
                     logRegistryError(
-                        "GUID Error: " + guid + " of type: " + type.toString() + " doesn't exist. This is either " + "a removed/renamed old registry, or robertx22 forgot to include it in an " + "update" + ".");
+                        "GUID Error: " + guid + " of type: " + type.id + " doesn't exist. This is either " + "a removed/renamed old registry, or robertx22 forgot to include it in an " + "update" + ".");
                     accessorErrosAletedFor.add(guid);
                 }
             }
