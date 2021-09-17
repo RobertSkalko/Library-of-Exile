@@ -13,6 +13,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
@@ -31,6 +33,16 @@ public class EntityInfoComponent {
     private static final String SPAWN_POS = "spawn_pos";
     private static final String SPAWN_REASON = "spawn";
 
+    @Mod.EventBusSubscriber
+    public static class EventHandler {
+        @SubscribeEvent
+        public static void onEntityConstruct(AttachCapabilitiesEvent<Entity> event) {
+            if (event.getObject() instanceof LivingEntity) {
+                event.addCapability(RESOURCE, new Provider((LivingEntity) event.getObject()));
+            }
+        }
+    }
+
     public interface IEntityInfo extends ICommonCap, BaseStorage<IEntityInfo> {
 
         EntityDmgStatsData getDamageStats();
@@ -44,11 +56,14 @@ public class EntityInfoComponent {
         void setSpawnReasonOnCreate(SpawnReason reason);
     }
 
-    public static class Provider extends BaseProvider<IEntityInfo> {
+    public static class Provider extends BaseProvider<IEntityInfo, LivingEntity> {
+        public Provider(LivingEntity owner) {
+            super(owner);
+        }
 
         @Override
-        public IEntityInfo newDefaultImpl() {
-            return new DefaultImpl();
+        public IEntityInfo newDefaultImpl(LivingEntity owner) {
+            return new DefaultImpl(owner);
         }
 
         @Override
@@ -68,8 +83,10 @@ public class EntityInfoComponent {
         private BlockPos spawnPos;
         public MySpawnReason spawnReason = null;
 
-        public DefaultImpl() {
+        public LivingEntity owner;
 
+        public DefaultImpl(LivingEntity en) {
+            this.owner = en;
         }
 
         @Override

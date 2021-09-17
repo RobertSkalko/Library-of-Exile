@@ -1,17 +1,8 @@
 package com.robertx22.library_of_exile.packets.defaults;
 
-import com.robertx22.library_of_exile.main.Ref;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.minecraft.core.Registry;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-
 public class EntityPacket {
 
+    /*
     public static final ResourceLocation ID = new ResourceLocation(Ref.MODID, "spawn_entity");
 
     public static Packet<?> createPacket(Entity entity) {
@@ -33,4 +24,7 @@ public class EntityPacket {
         return new PacketBuffer(Unpooled.buffer());
     }
 
+*/
+
 }
+

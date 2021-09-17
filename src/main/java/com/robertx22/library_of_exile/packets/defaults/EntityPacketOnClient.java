@@ -1,18 +1,7 @@
 package com.robertx22.library_of_exile.packets.defaults;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Registry;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
-
-import java.util.UUID;
-
 public class EntityPacketOnClient {
+    /*
     @Environment(EnvType.CLIENT)
     public static void onPacket(Context context, PacketBuffer byteBuf) {
         EntityType<?> type = Registry.ENTITY_TYPE.byId(byteBuf.readVarInt());
@@ -39,4 +28,6 @@ public class EntityPacketOnClient {
                 }
             });
     }
+
+     */
 }

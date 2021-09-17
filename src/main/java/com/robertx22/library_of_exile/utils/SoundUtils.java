@@ -1,6 +1,5 @@
 package com.robertx22.library_of_exile.utils;
 
-import net.minecraft.client.audio.SoundSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -18,10 +17,10 @@ public class SoundUtils {
 
     public static void playSound(World world, BlockPos pos, SoundEvent sound, float volume, float pitch) {
         //this should be universal
-        world.playSound(null, pos, sound, SoundSource.PLAYERS, volume, pitch);
+        world.playSound(null, pos, sound, SoundCategory.PLAYERS, volume, pitch);
     }
 
-    public static void playSound(World world, BlockPos pos, SoundEvent sound, SoundSource cat, float volume, float pitch) {
+    public static void playSound(World world, BlockPos pos, SoundEvent sound, SoundCategory cat, float volume, float pitch) {
         //this should be universal
         world.playSound(null, pos, sound, cat, volume, pitch);
     }

@@ -8,14 +8,23 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 
-public abstract class BaseProvider<TYPE> implements ICapabilitySerializable<CompoundNBT> {
+public abstract class BaseProvider<TYPE, OWNER_CLASS> implements ICapabilitySerializable<CompoundNBT> {
 
-    public abstract TYPE newDefaultImpl();
+    public OWNER_CLASS owner;
+
+    public BaseProvider(OWNER_CLASS owner) {
+        this.owner = owner;
+
+        impl = newDefaultImpl(owner);
+        cap = LazyOptional.of(() -> impl);
+    }
+
+    public abstract TYPE newDefaultImpl(OWNER_CLASS owner);
 
     public abstract Capability<TYPE> dataInstance();
 
-    TYPE impl = newDefaultImpl();
-    private final LazyOptional<TYPE> cap = LazyOptional.of(() -> impl);
+    TYPE impl;
+    private final LazyOptional<TYPE> cap;
 
     @Override
     public CompoundNBT serializeNBT() {
