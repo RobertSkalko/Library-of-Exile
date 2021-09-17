@@ -2,30 +2,35 @@ package com.robertx22.library_of_exile.events.base;
 
 import com.robertx22.library_of_exile.utils.EntityUtils;
 import com.robertx22.library_of_exile.utils.TeleportUtils;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class StaticServerPlayerTickEvent implements ServerTickEvents.EndTick {
+@Mod.EventBusSubscriber(modid = "mmorpg")
+public class StaticServerPlayerTickEvent {
 
     public static HashMap<UUID, PlayerTickData> PlayerTickDatas = new HashMap<UUID, PlayerTickData>();
 
-    @Override
-    public void onEndTick(MinecraftServer server) {
+    @SubscribeEvent
+    public void onEndTick(TickEvent.ServerTickEvent event) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 
-        for (ServerPlayerEntity player : server.getPlayerManager()
-            .getPlayerList()) {
+        for (ServerPlayerEntity player : server.getPlayerList()
+            .getPlayers()) {
 
             try {
 
-                PlayerTickData data = PlayerTickDatas.get(player.getUuid());
+                PlayerTickData data = PlayerTickDatas.get(player.getUUID());
 
                 if (data == null) {
                     data = new PlayerTickData();
@@ -48,7 +53,7 @@ public class StaticServerPlayerTickEvent implements ServerTickEvents.EndTick {
                     }
                 }
 
-                PlayerTickDatas.put(player.getUuid(), data);
+                PlayerTickDatas.put(player.getUUID(), data);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -59,18 +64,18 @@ public class StaticServerPlayerTickEvent implements ServerTickEvents.EndTick {
 
     public static Consumer<EnsureTeleportData> MAKE_SURE_TELEPORT = x -> {
 
-        if (x.player.isDead()) {
+        if (x.player.isDeadOrDying()) {
             x.cancel();
             return;
         }
 
         x.player.setInvulnerable(true);
 
-        if (x.player.getBlockPos()
-            .getSquaredDistance(x.whereShouldTeleport) > 1000) {
+        if (x.player.blockPosition()
+            .distSqr(x.whereShouldTeleport) > 1000) {
 
             if (x.tries > 3) {
-                BlockPos spawnpos = x.player.getSpawnPointPosition();
+                BlockPos spawnpos = x.player.getRespawnPosition();
                 if (spawnpos != null) {
                     EntityUtils.setLoc(x.player, spawnpos);
                 }
@@ -82,7 +87,7 @@ public class StaticServerPlayerTickEvent implements ServerTickEvents.EndTick {
 
                 x.tries++;
 
-                x.player.sendMessage(new LiteralText("There was a teleport bug but the auto correction system should have teleported you back correctly"), false);
+                x.player.displayClientMessage(new StringTextComponent("There was a teleport bug but the auto correction system should have teleported you back correctly"), false);
 
                 TeleportUtils.teleport(x.player, x.whereShouldTeleport);
             }
@@ -90,13 +95,13 @@ public class StaticServerPlayerTickEvent implements ServerTickEvents.EndTick {
 
     };
 
-    public static void makeSureTeleport(ServerPlayerEntity player, BlockPos teleportPos, Identifier dim) {
+    public static void makeSureTeleport(ServerPlayerEntity player, BlockPos teleportPos, ResourceLocation dim) {
 
-        if (!PlayerTickDatas.containsKey(player.getUuid())) {
-            PlayerTickDatas.put(player.getUuid(), new PlayerTickData());
+        if (!PlayerTickDatas.containsKey(player.getUUID())) {
+            PlayerTickDatas.put(player.getUUID(), new PlayerTickData());
         }
         player.setInvulnerable(true);
-        PlayerTickDatas.get(player.getUuid()).ensureTeleportData =
+        PlayerTickDatas.get(player.getUUID()).ensureTeleportData =
             new EnsureTeleportData(player, MAKE_SURE_TELEPORT, 50, teleportPos, dim);
     }
 

@@ -1,10 +1,10 @@
 package com.robertx22.library_of_exile.registry.serialization;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketBuffer;
 
 public interface IByteBuf<T> {
 
-    T getFromBuf(PacketByteBuf buf);
+    T getFromBuf(PacketBuffer buf);
 
-    void toBuf(PacketByteBuf buf);
+    void toBuf(PacketBuffer buf);
 }

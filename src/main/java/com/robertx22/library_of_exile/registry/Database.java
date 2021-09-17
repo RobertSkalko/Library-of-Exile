@@ -1,6 +1,6 @@
 package com.robertx22.library_of_exile.registry;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;

@@ -6,10 +6,11 @@ import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
 import info.loenwind.autosave.util.NonnullType;
 import info.loenwind.autosave.util.TypeUtil;
+import net.minecraft.nbt.CompoundNBT;
+
 import java.lang.reflect.Type;
 import java.util.Set;
 import java.util.function.Function;
-import net.minecraft.nbt.NbtCompound;
 
 public class DelegatingHandler<T, R> implements IHandler<T> {
 
@@ -39,7 +40,7 @@ public class DelegatingHandler<T, R> implements IHandler<T> {
     }
 
     @Override
-    public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, T object)
+    public boolean store(Registry registry, Set<NBTAction> phase, CompoundNBT nbt, Type type, String name, T object)
         throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
         R obj = storeConverter.apply(object);
         if (obj == null) {
@@ -49,7 +50,7 @@ public class DelegatingHandler<T, R> implements IHandler<T> {
     }
 
     @Override
-    public T read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name, T object)
+    public T read(Registry registry, Set<NBTAction> phase, CompoundNBT nbt, Type type, String name, T object)
         throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
         R intermediate = delegate.read(registry, phase, nbt, type, name, object == null ? null : storeConverter.apply(object));
         return intermediate == null ? null : readConverter.apply(intermediate);

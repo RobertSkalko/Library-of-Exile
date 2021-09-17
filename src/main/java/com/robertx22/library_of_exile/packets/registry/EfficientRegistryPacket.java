@@ -9,14 +9,14 @@ import com.robertx22.library_of_exile.registry.ExileRegistryContainer;
 import com.robertx22.library_of_exile.registry.ExileRegistryType;
 import com.robertx22.library_of_exile.registry.JsonExileRegistry;
 import com.robertx22.library_of_exile.registry.serialization.IByteBuf;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.List;
 
 public class EfficientRegistryPacket<T extends IByteBuf & JsonExileRegistry> extends MyPacket<EfficientRegistryPacket> {
-    public static Identifier ID = new Identifier(Ref.MODID, "eff_reg");
+    public static ResourceLocation ID = new ResourceLocation(Ref.MODID, "eff_reg");
     private List<T> items;
 
     ExileRegistryType type;
@@ -31,14 +31,14 @@ public class EfficientRegistryPacket<T extends IByteBuf & JsonExileRegistry> ext
     }
 
     @Override
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return ID;
     }
 
     @Override
-    public void loadFromData(PacketByteBuf buf) {
+    public void loadFromData(PacketBuffer buf) {
 
-        this.type = ExileRegistryType.get(buf.readString(30));
+        this.type = ExileRegistryType.get(buf.readUtf(30));
 
         if (LibraryOfExile.runDevTools()) {
             //System.out.print("\n Eff packet " + type.name() + " is " + buf.readableBytes() + " bytes big \n");
@@ -57,16 +57,16 @@ public class EfficientRegistryPacket<T extends IByteBuf & JsonExileRegistry> ext
     }
 
     @Override
-    public void saveToData(PacketByteBuf buf) {
+    public void saveToData(PacketBuffer buf) {
 
-        buf.writeString(type.id, 30);
+        buf.writeUtf(type.id, 30);
         buf.writeVarInt(this.items.size());
         items.forEach(x -> x.toBuf(buf));
 
     }
 
     @Override
-    public void onReceived(PacketContext ctx) {
+    public void onReceived(Context ctx) {
 
         ExileRegistryContainer reg = Database.getRegistry(type);
 

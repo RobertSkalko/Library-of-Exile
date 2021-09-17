@@ -1,7 +1,8 @@
 package com.robertx22.library_of_exile.utils;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundNBT;
+
 import java.util.function.Supplier;
 
 public class ItemstackDataSaver<T> {
@@ -42,7 +43,7 @@ public class ItemstackDataSaver<T> {
             return;
         }
         if (!stack.hasTag()) {
-            stack.setTag(new NbtCompound());
+            stack.setTag(new CompoundNBT());
         }
         if (object != null) {
             LoadSave.Save(object, stack.getTag(), id);

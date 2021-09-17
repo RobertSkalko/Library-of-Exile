@@ -1,31 +1,31 @@
 package com.robertx22.library_of_exile.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.robertx22.library_of_exile.main.Ref;
 import com.robertx22.library_of_exile.utils.GuiUtils;
 import com.robertx22.library_of_exile.utils.RenderUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.TexturedButtonWidget;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.widget.button.ImageButton;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemSlotButton extends TexturedButtonWidget {
+public class ItemSlotButton extends ImageButton {
 
     public static int xSize = 16;
     public static int ySize = 16;
 
-    static Identifier buttonLoc = new Identifier(Ref.MODID, "");
+    static ResourceLocation buttonLoc = new ResourceLocation(Ref.MODID, "");
 
-    static Identifier fancyBorderLoc = new Identifier(Ref.MODID, "textures/gui/pretty_icon_border.png");
+    static ResourceLocation fancyBorderLoc = new ResourceLocation(Ref.MODID, "textures/gui/pretty_icon_border.png");
     static int FX = 20;
     static int FY = 20;
     ItemStack stack;
-    MinecraftClient mc = MinecraftClient.getInstance();
+    Minecraft mc = Minecraft.getInstance();
 
     public boolean renderFancyBorder = false;
 
@@ -35,7 +35,7 @@ public class ItemSlotButton extends TexturedButtonWidget {
         this.stack = stack;
     }
 
-    public ItemSlotButton(ItemStack stack, int xPos, int yPos, PressAction onclick) {
+    public ItemSlotButton(ItemStack stack, int xPos, int yPos, IPressable onclick) {
         super(xPos + 1, yPos + 1, xSize, ySize, 0, 0, ySize + 1, buttonLoc, onclick);
         this.stack = stack;
     }
@@ -45,8 +45,8 @@ public class ItemSlotButton extends TexturedButtonWidget {
 
         if (renderFancyBorder) {
             mc.getTextureManager()
-                .bindTexture(fancyBorderLoc);
-            drawTexture(matrix, this.x - 2, this.y - 2, 0, 0, FX, FY);
+                .bind(fancyBorderLoc);
+            blit(matrix, this.x - 2, this.y - 2, 0, 0, FX, FY);
         }
 
         RenderUtils.renderStack(stack, this.x, this.y);
@@ -57,8 +57,8 @@ public class ItemSlotButton extends TexturedButtonWidget {
     public void renderToolTip(MatrixStack matrix, int x, int y) {
         if (!stack.isEmpty()) {
             if (isInside(x, y)) {
-                List<Text> tooltip = new ArrayList<>();
-                tooltip.addAll(stack.getTooltip(mc.player, TooltipContext.Default.NORMAL));
+                List<ITextComponent> tooltip = new ArrayList<>();
+                tooltip.addAll(stack.getTooltipLines(mc.player, ITooltipFlag.TooltipFlags.NORMAL));
                 GuiUtils.renderTooltip(matrix, tooltip, x, y);
             }
         }

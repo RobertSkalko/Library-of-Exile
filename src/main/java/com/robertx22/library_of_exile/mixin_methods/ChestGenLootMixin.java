@@ -1,37 +1,37 @@
 package com.robertx22.library_of_exile.mixin_methods;
 
 import com.robertx22.library_of_exile.events.base.ExileEvents;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.tileentity.ChestTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ChestGenLootMixin {
 
-    public static void onLootGen(Inventory inventory, LootContext context) {
-        BlockEntity chest = null;
+    public static void onLootGen(IInventory inventory, LootContext context) {
+        TileEntity chest = null;
         BlockPos pos = null;
 
-        if (inventory instanceof BlockEntity) {
-            chest = (BlockEntity) inventory;
+        if (inventory instanceof TileEntity) {
+            chest = (TileEntity) inventory;
         }
 
-        if (context.hasParameter(LootContextParameters.THIS_ENTITY) && context.get(LootContextParameters.THIS_ENTITY) instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) context.get(LootContextParameters.THIS_ENTITY);
+        if (context.hasParam(LootParameters.THIS_ENTITY) && context.getParamOrNull(LootParameters.THIS_ENTITY) instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) context.getParamOrNull(LootParameters.THIS_ENTITY);
             World world = null;
             if (chest != null) {
-                world = chest.getWorld();
-                pos = chest.getPos();
+                world = chest.getLevel();
+                pos = chest.getBlockPos();
             }
             if (world == null) {
                 return;
             }
 
-            if (inventory instanceof ChestBlockEntity) {
+            if (inventory instanceof ChestTileEntity) {
                 ExileEvents.ON_CHEST_LOOTED.callEvents(new ExileEvents.OnChestLooted(player, context, inventory, pos));
             }
 

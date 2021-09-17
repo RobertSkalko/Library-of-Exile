@@ -1,12 +1,13 @@
 package info.loenwind.autosave.handlers.internal;
 
-import java.lang.reflect.Type;
-import java.util.Set;
-import net.minecraft.nbt.NbtCompound;
 import info.loenwind.autosave.Registry;
 import info.loenwind.autosave.exceptions.NoHandlerFoundException;
 import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
+import net.minecraft.nbt.CompoundNBT;
+
+import java.lang.reflect.Type;
+import java.util.Set;
 
 /**
  * A dummy {@link IHandler} that is used as default value for fields. It will be
@@ -20,20 +21,20 @@ import info.loenwind.autosave.util.NBTAction;
  */
 public class NullHandler implements IHandler<NullHandler> {
 
-  private NullHandler() {
-  }
+    private NullHandler() {
+    }
 
-  @Override
-  public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type, String name,
-      NullHandler object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    return false;
-  }
+    @Override
+    public boolean store(Registry registry, Set<NBTAction> phase, CompoundNBT nbt, Type type, String name,
+                         NullHandler object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
+        return false;
+    }
 
-  @Override
-  public NullHandler read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type,
-      String name, NullHandler object)
-      throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-    return null;
-  }
+    @Override
+    public NullHandler read(Registry registry, Set<NBTAction> phase, CompoundNBT nbt, Type type,
+                            String name, NullHandler object)
+        throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
+        return null;
+    }
 
 }

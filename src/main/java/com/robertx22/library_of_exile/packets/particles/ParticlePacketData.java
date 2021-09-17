@@ -3,12 +3,12 @@ package com.robertx22.library_of_exile.packets.particles;
 import com.robertx22.library_of_exile.utils.RGB;
 import info.loenwind.autosave.annotations.Storable;
 import info.loenwind.autosave.annotations.Store;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.Identifier;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 
 @Storable
@@ -54,17 +54,15 @@ public class ParticlePacketData {
     @Store
     public String particleID;
 
-    public <T extends ParticleEffect> ParticleEffect getParticleType() {
-        ParticleType<T> particleType = (ParticleType<T>) Registry.PARTICLE_TYPE.get(new Identifier(particleID));
+    public <T extends IParticleData> IParticleData getParticleType() {
+        ParticleType<T> particleType = (ParticleType<T>) Registry.PARTICLE_TYPE.get(new ResourceLocation(particleID));
 
-        if (particleType instanceof ParticleEffect) {
-            return (ParticleEffect) particleType;
-        } else
-
-            return ParticleTypes.CRIT;
+        if (particleType instanceof IParticleData) {
+            return (IParticleData) particleType;
+        } else return ParticleTypes.CRIT;
     }
 
-    public ParticlePacketData motion(Vec3d v) {
+    public ParticlePacketData motion(Vector3d v) {
         mx = v.x;
         my = v.y;
         mz = v.z;
@@ -72,7 +70,7 @@ public class ParticlePacketData {
     }
 
     public ParticlePacketData type(ParticleType type) {
-        this.particleID = Registry.PARTICLE_TYPE.getId(type)
+        this.particleID = Registry.PARTICLE_TYPE.getKey(type)
             .toString();
         return this;
     }
@@ -97,18 +95,18 @@ public class ParticlePacketData {
         return this;
     }
 
-    public Vec3d getPos() {
-        return new Vec3d(x, y, z);
+    public Vector3d getPos() {
+        return new Vector3d(x, y, z);
     }
 
     public BlockPos getBlockPos() {
         return new BlockPos(x, y, z);
     }
 
-    public ParticlePacketData(Vec3d pos, ParticleEnum type) {
-        x = pos.getX();
-        y = pos.getY();
-        z = pos.getZ();
+    public ParticlePacketData(Vector3d pos, ParticleEnum type) {
+        x = pos.x();
+        y = pos.y();
+        z = pos.z();
         this.isVecPos = true;
         this.type = type;
     }

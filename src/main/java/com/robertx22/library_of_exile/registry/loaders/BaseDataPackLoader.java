@@ -7,16 +7,16 @@ import com.google.gson.JsonObject;
 import com.robertx22.library_of_exile.main.LibraryOfExile;
 import com.robertx22.library_of_exile.registry.*;
 import com.robertx22.library_of_exile.utils.Watch;
-import net.minecraft.resource.JsonDataLoader;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.client.resources.JsonReloadListener;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class BaseDataPackLoader<T extends ExileRegistry> extends JsonDataLoader {
+public abstract class BaseDataPackLoader<T extends ExileRegistry> extends JsonReloadListener {
     private static final Gson GSON = new GsonBuilder().create();
 
     public String id;
@@ -34,20 +34,20 @@ public abstract class BaseDataPackLoader<T extends ExileRegistry> extends JsonDa
     public abstract ExileDatapackGenerator getDataPackGenerator();
 
     @Override
-    protected Map<Identifier, JsonElement> prepare(ResourceManager resourceManager, Profiler profiler) {
+    protected Map<ResourceLocation, JsonElement> prepare(IResourceManager manager, IProfiler profiler) {
 
         if (LibraryOfExile.runDevTools()) {
             this.getDataPackGenerator()
                 .run(); // first generate, then load. so no errors in dev enviroment
         }
 
-        return super.prepare(resourceManager, profiler);
+        return super.prepare(manager, profiler);
     }
 
     static String ENABLED = "enabled";
 
     @Override
-    protected void apply(Map<Identifier, JsonElement> mapToLoad, ResourceManager manager, Profiler profilerIn) {
+    protected void apply(Map<ResourceLocation, JsonElement> mapToLoad, IResourceManager manager, IProfiler profilerIn) {
 
         try {
             ExileRegistryContainer reg = Database.getRegistry(registryType);

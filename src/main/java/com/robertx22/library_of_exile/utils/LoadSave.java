@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import info.loenwind.autosave.Reader;
 import info.loenwind.autosave.Writer;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public class LoadSave {
 
@@ -14,10 +14,10 @@ public class LoadSave {
 
     private static final Gson gson = new GsonBuilder().create();
 
-    public static NbtCompound Save(Object obj, NbtCompound nbt, String loc) {
+    public static CompoundNBT Save(Object obj, CompoundNBT nbt, String loc) {
 
         if (nbt == null) {
-            nbt = new NbtCompound();
+            nbt = new CompoundNBT();
         }
 
         if (useGSON) {
@@ -25,7 +25,7 @@ public class LoadSave {
             nbt.putString(loc + GSONLOC, json);
 
         } else {
-            NbtCompound objNbt = new NbtCompound();
+            CompoundNBT objNbt = new CompoundNBT();
             Writer.write(objNbt, obj);
             nbt.put(loc, objNbt);
         }
@@ -35,7 +35,7 @@ public class LoadSave {
     }
 
     public static <OBJ extends Object> OBJ Load(Class theclass, OBJ newobj,
-                                                NbtCompound nbt, String loc) {
+                                                CompoundNBT nbt, String loc) {
 
         if (nbt == null) {
             return null;
@@ -52,7 +52,7 @@ public class LoadSave {
         } else {
 
             if (nbt.contains(loc)) {
-                NbtCompound thenbt = (NbtCompound) nbt.get(loc);
+                CompoundNBT thenbt = (CompoundNBT) nbt.get(loc);
                 Reader.read(thenbt, newobj);
                 //System.out.println(thenbt.toString());
             } else {

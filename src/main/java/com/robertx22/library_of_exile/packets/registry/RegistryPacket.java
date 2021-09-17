@@ -12,15 +12,15 @@ import com.robertx22.library_of_exile.registry.ListStringData;
 import com.robertx22.library_of_exile.registry.RegistryPackets;
 import com.robertx22.library_of_exile.utils.LoadSave;
 import com.robertx22.library_of_exile.utils.Watch;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.List;
 
 public class RegistryPacket extends MyPacket<RegistryPacket> {
-    public static Identifier ID = new Identifier(Ref.MODID, "reg");
+    public static ResourceLocation ID = new ResourceLocation(Ref.MODID, "reg");
 
     public static final JsonParser PARSER = new JsonParser();
 
@@ -37,20 +37,20 @@ public class RegistryPacket extends MyPacket<RegistryPacket> {
     }
 
     @Override
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return ID;
     }
 
     @Override
-    public void loadFromData(PacketByteBuf tag) {
+    public void loadFromData(PacketBuffer tag) {
 
         try {
-            type = ExileRegistryType.get(tag.readString(30));
+            type = ExileRegistryType.get(tag.readUtf(30));
 
             if (LibraryOfExile.runDevTools()) {
                 //System.out.print("\n Gson packet " + type.name() + " is " + tag.readableBytes() + " bytes big\n");
             }
-            NbtCompound nbt = tag.readNbt();
+            CompoundNBT nbt = tag.readNbt();
 
             data = LoadSave.Load(ListStringData.class, new ListStringData(), nbt, "data");
 
@@ -62,12 +62,12 @@ public class RegistryPacket extends MyPacket<RegistryPacket> {
     }
 
     @Override
-    public void saveToData(PacketByteBuf tag) {
+    public void saveToData(PacketBuffer tag) {
 
         try {
             Watch watch = new Watch().min(8000);
-            tag.writeString(type.id, 30);
-            NbtCompound nbt = new NbtCompound();
+            tag.writeUtf(type.id, 30);
+            CompoundNBT nbt = new CompoundNBT();
 
             LoadSave.Save(data, nbt, "data");
 
@@ -81,7 +81,7 @@ public class RegistryPacket extends MyPacket<RegistryPacket> {
     }
 
     @Override
-    public void onReceived(PacketContext ctx) {
+    public void onReceived(Context ctx) {
 
         if (data.getList()
             .isEmpty()) {

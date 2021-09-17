@@ -1,9 +1,10 @@
 package com.robertx22.library_of_exile.utils;
 
+import net.minecraft.client.audio.SoundSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -11,22 +12,22 @@ public class SoundUtils {
 
     public static void playSound(Entity entity, SoundEvent sound, float volume, float pitch) {
         //this should be universal
-        entity.world.playSound(null, entity.getBlockPos(), sound, SoundCategory.PLAYERS, volume, pitch);
+        entity.level.playSound(null, entity.blockPosition(), sound, SoundCategory.PLAYERS, volume, pitch);
 
     }
 
     public static void playSound(World world, BlockPos pos, SoundEvent sound, float volume, float pitch) {
         //this should be universal
-        world.playSound(null, pos, sound, SoundCategory.PLAYERS, volume, pitch);
+        world.playSound(null, pos, sound, SoundSource.PLAYERS, volume, pitch);
     }
 
-    public static void playSound(World world, BlockPos pos, SoundEvent sound, SoundCategory cat, float volume, float pitch) {
+    public static void playSound(World world, BlockPos pos, SoundEvent sound, SoundSource cat, float volume, float pitch) {
         //this should be universal
         world.playSound(null, pos, sound, cat, volume, pitch);
     }
 
     public static void ding(World world, BlockPos pos) {
-        SoundUtils.playSound(world, pos, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+        SoundUtils.playSound(world, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, 1, 1);
     }
 
 }

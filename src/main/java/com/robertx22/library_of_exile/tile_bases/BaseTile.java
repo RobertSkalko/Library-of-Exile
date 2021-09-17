@@ -1,25 +1,25 @@
 package com.robertx22.library_of_exile.tile_bases;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.SidedInventory;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.util.Tickable;
-import net.minecraft.util.math.Direction;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInventory, Tickable, NamedScreenHandlerFactory {
+public abstract class BaseTile extends TileEntity implements IOBlock, ISidedInventory, ITickableTileEntity, INamedContainerProvider {
 
-    public BaseTile(BlockEntityType<?> tileEntityTypeIn) {
+    public BaseTile(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
     }
 
@@ -44,7 +44,7 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
     @Override
     public void tick() {
         try {
-            if (!this.world.isClient) {
+            if (!this.level.isClientSide) {
 
                 ticks++;
                 if (ticks > tickRate()) {
@@ -87,7 +87,7 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
     }
 
     @Override
-    public int[] getAvailableSlots(Direction side) {
+    public int[] getSlotsForFace(Direction side) {
         int[] ar = new int[slots().size()];
         for (int i = 0; i < slots().size(); i++) {
             ar[i] = i;
@@ -112,7 +112,7 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
     }
 
     @Override
-    public boolean canInsert(int index, ItemStack itemStackIn, Direction direction) {
+    public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, Direction direction) {
         if (this.isAutomatable() && containsSlot(index)) {
             // don't insert shit
             return this.isItemValidInput(itemStackIn);
@@ -121,7 +121,7 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
     }
 
     @Override
-    public boolean canExtract(int index, ItemStack stack, Direction direction) {
+    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
 
         if (this.isAutomatable()) {
             return isOutputSlot(index);
@@ -131,7 +131,7 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
 
     // Gets the stack in the given slot
     @Override
-    public ItemStack getStack(int i) {
+    public ItemStack getItem(int i) {
 
         return itemStacks[i];
     }
@@ -145,28 +145,28 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
      * @return a new itemstack containing the units removed from the slot
      */
     @Override
-    public ItemStack removeStack(int slotIndex, int count) {
-        ItemStack itemStackInSlot = getStack(slotIndex);
+    public ItemStack removeItem(int slotIndex, int count) {
+        ItemStack itemStackInSlot = getItem(slotIndex);
         if (itemStackInSlot.isEmpty())
             return ItemStack.EMPTY; // isEmpty(), EMPTY_ITEM
 
         ItemStack itemStackRemoved;
         if (itemStackInSlot.getCount() <= count) { // getStackSize
             itemStackRemoved = itemStackInSlot;
-            setStack(slotIndex, ItemStack.EMPTY); // EMPTY_ITEM
+            setItem(slotIndex, ItemStack.EMPTY); // EMPTY_ITEM
         } else {
             itemStackRemoved = itemStackInSlot.split(count);
             if (itemStackInSlot.getCount() == 0) { // getStackSize
-                setStack(slotIndex, ItemStack.EMPTY); // EMPTY_ITEM
+                setItem(slotIndex, ItemStack.EMPTY); // EMPTY_ITEM
             }
         }
-        markDirty();
+        setChanged();
         return itemStackRemoved;
     }
 
     // Gets the number of slots in the inventory
     @Override
-    public int size() {
+    public int getContainerSize() {
         return itemStacks.length;
     }
 
@@ -184,26 +184,26 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
 
     // overwrites the stack in the given slotIndex with the given stack
     @Override
-    public void setStack(int slotIndex, ItemStack itemstack) {
+    public void setItem(int slotIndex, ItemStack itemstack) {
         itemStacks[slotIndex] = itemstack;
-        if (!itemstack.isEmpty() && itemstack.getCount() > getMaxCountPerStack()) { // isEmpty(); getStackSize()
-            itemstack.setCount(getMaxCountPerStack()); // setStackSize()
+        if (!itemstack.isEmpty() && itemstack.getCount() > getMaxStackSize()) { // isEmpty(); getStackSize()
+            itemstack.setCount(getMaxStackSize()); // setStackSize()
         }
-        markDirty();
+        setChanged();
     }
 
     // set all slots to empty
     @Override
-    public void clear() {
+    public void clearContent() {
         Arrays.fill(itemStacks, ItemStack.EMPTY); // EMPTY_ITEM
     }
 
     @Override
-    public void onOpen(PlayerEntity player) {
+    public void startOpen(PlayerEntity player) {
     }
 
     @Override
-    public void onClose(PlayerEntity player) {
+    public void stopOpen(PlayerEntity player) {
     }
 
     // -----------------------------------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
     // Unused unless your container specifically uses it.
     // Return true if the given stack is allowed to go in the given slot
     @Override
-    public boolean isValid(int slotIndex, ItemStack itemstack) {
+    public boolean canPlaceItem(int slotIndex, ItemStack itemstack) {
         return true;
     }
 
@@ -226,41 +226,41 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
      * @return
      */
     @Override
-    public ItemStack removeStack(int slotIndex) {
+    public ItemStack removeItemNoUpdate(int slotIndex) {
 
-        ItemStack itemStack = getStack(slotIndex);
+        ItemStack itemStack = getItem(slotIndex);
         if (!itemStack.isEmpty())
-            setStack(slotIndex, ItemStack.EMPTY); // isEmpty(); EMPTY_ITEM
+            setItem(slotIndex, ItemStack.EMPTY); // isEmpty(); EMPTY_ITEM
         return itemStack;
     }
 
     @Override
-    public int getMaxCountPerStack() {
+    public int getMaxStackSize() {
         return 64;
     }
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) {
-        if (this.world.getBlockEntity(this.pos) != this)
+    public boolean stillValid(PlayerEntity player) {
+        if (this.level.getBlockEntity(this.worldPosition) != this)
             return false;
         final double X_CENTRE_OFFSET = 0.5;
         final double Y_CENTRE_OFFSET = 0.5;
         final double Z_CENTRE_OFFSET = 0.5;
         final double MAXIMUM_DISTANCE_SQ = 8.0 * 8.0;
-        return player.squaredDistanceTo(pos.getX() + X_CENTRE_OFFSET, pos.getY() + Y_CENTRE_OFFSET, pos
+        return player.distanceToSqr(worldPosition.getX() + X_CENTRE_OFFSET, worldPosition.getY() + Y_CENTRE_OFFSET, worldPosition
             .getZ() + Z_CENTRE_OFFSET) < MAXIMUM_DISTANCE_SQ;
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound parentNBTTagCompound) {
-        super.writeNbt(parentNBTTagCompound); // The super call is required to save and load the tiles location
+    public CompoundNBT save(CompoundNBT parentNBTTagCompound) {
+        super.save(parentNBTTagCompound); // The super call is required to save and load the tiles location
 
-        NbtList dataForAllSlots = new NbtList();
+        ListNBT dataForAllSlots = new ListNBT();
         for (int i = 0; i < this.itemStacks.length; ++i) {
             if (!this.itemStacks[i].isEmpty()) { // isEmpty()
-                NbtCompound dataForThisSlot = new NbtCompound();
+                CompoundNBT dataForThisSlot = new CompoundNBT();
                 dataForThisSlot.putByte("Slot", (byte) i);
-                this.itemStacks[i].writeNbt(dataForThisSlot);
+                this.itemStacks[i].save(dataForThisSlot);
                 dataForAllSlots.add(dataForThisSlot);
             }
         }
@@ -278,17 +278,17 @@ public abstract class BaseTile extends BlockEntity implements IOBlock, SidedInve
 
     // This is where you load the dataInstance that you saved in write
     @Override
-    public void fromTag(BlockState state, NbtCompound nbtTagCompound) {
-        super.fromTag(state, nbtTagCompound); // The super call is required to save and load the tiles location
+    public void load(BlockState state, CompoundNBT nbtTagCompound) {
+        super.load(state, nbtTagCompound); // The super call is required to save and load the tiles location
         final byte NBT_TYPE_COMPOUND = 10; // See NBTBase.createNewByType() for a listing
-        NbtList dataForAllSlots = nbtTagCompound.getList("Items", NBT_TYPE_COMPOUND);
+        ListNBT dataForAllSlots = nbtTagCompound.getList("Items", NBT_TYPE_COMPOUND);
 
         Arrays.fill(itemStacks, ItemStack.EMPTY); // set all slots to empty EMPTY_ITEM
         for (int i = 0; i < dataForAllSlots.size(); ++i) {
-            NbtCompound dataForOneSlot = dataForAllSlots.getCompound(i);
+            CompoundNBT dataForOneSlot = dataForAllSlots.getCompound(i);
             byte slotNumber = dataForOneSlot.getByte("Slot");
             if (slotNumber >= 0 && slotNumber < this.itemStacks.length) {
-                this.itemStacks[slotNumber] = ItemStack.fromNbt(dataForOneSlot);
+                this.itemStacks[slotNumber] = ItemStack.of(dataForOneSlot);
             }
         }
 

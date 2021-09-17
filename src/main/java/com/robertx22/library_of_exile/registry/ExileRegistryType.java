@@ -3,7 +3,7 @@ package com.robertx22.library_of_exile.registry;
 import com.google.gson.JsonObject;
 import com.robertx22.library_of_exile.registry.loaders.BaseDataPackLoader;
 import com.robertx22.library_of_exile.registry.serialization.ISerializable;
-import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.resources.SimpleReloadableResourceManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -60,13 +60,13 @@ public class ExileRegistryType {
         return list;
     }
 
-    public static void registerJsonListeners(ReloadableResourceManager manager) {
+    public static void registerJsonListeners(SimpleReloadableResourceManager manager) {
         List<ExileRegistryType> list = new ArrayList<>(all);
         list.sort(Comparator.comparingInt(x -> x.order));
         list
             .forEach(x -> {
                 if (x.getLoader() != null) {
-                    manager.registerReloader(x.getLoader());
+                    manager.registerReloadListener(x.getLoader());
                 }
             });
     }

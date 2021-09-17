@@ -1,15 +1,15 @@
 package com.robertx22.library_of_exile.registry;
 
 import com.google.common.base.Preconditions;
+import com.robertx22.library_of_exile.main.Packets;
 import com.robertx22.library_of_exile.packets.registry.EfficientRegistryPacket;
 import com.robertx22.library_of_exile.packets.registry.RegistryPacket;
 import com.robertx22.library_of_exile.registry.serialization.IByteBuf;
 import com.robertx22.library_of_exile.registry.serialization.ISerializable;
 import com.robertx22.library_of_exile.utils.RandomUtils;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +41,7 @@ public class ExileRegistryContainer<C extends ExileRegistry> {
     }
 
     List<C> fromDatapacks = null;
-    PacketByteBuf cachedBuf = null;
+    PacketBuffer cachedBuf = null;
 
     public void sendUpdatePacket(ServerPlayerEntity player) {
         if (type.ser == null) {
@@ -51,9 +51,13 @@ public class ExileRegistryContainer<C extends ExileRegistry> {
         Preconditions.checkNotNull(cachedBuf, type.id + " error, cachedbuf is null!!!");
 
         if (type.ser instanceof IByteBuf) {
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, EfficientRegistryPacket.ID, cachedBuf);
+            Packets.sendToClient(player, new EfficientRegistryPacket(this.type, getList()));
         } else {
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, RegistryPacket.ID, cachedBuf);
+            ListStringData data = new ListStringData(getFromDatapacks()
+                .stream()
+                .map(x -> ((ISerializable) x).toJsonString())
+                .collect(Collectors.toList()));
+            Packets.sendToClient(player, new RegistryPacket(this.type, data));
         }
     }
 
@@ -63,7 +67,7 @@ public class ExileRegistryContainer<C extends ExileRegistry> {
         getFromDatapacks();
 
         if (fromDatapacks != null && !fromDatapacks.isEmpty()) {
-            cachedBuf = new PacketByteBuf(Unpooled.buffer());
+            cachedBuf = new PacketBuffer(Unpooled.buffer());
             // save the packetbytebuf, this should save at least 0.1 sec for each time anyone logs in.
             // SUPER important for big mmorpg servers!
             if (type.ser instanceof IByteBuf) {

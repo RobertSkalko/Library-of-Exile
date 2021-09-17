@@ -1,8 +1,8 @@
 package com.robertx22.library_of_exile.registry;
 
 import com.robertx22.library_of_exile.registry.serialization.ISerializable;
-import net.minecraft.data.DataCache;
-import net.minecraft.data.DataProvider;
+import net.minecraft.data.DirectoryCache;
+import net.minecraft.data.IDataProvider;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,7 +29,7 @@ public class ExileDatapackGenerator<T extends IGUID & ISerializable<T>> extends 
                 ".json");
     }
 
-    protected void generateAll(DataCache cache) {
+    protected void generateAll(DirectoryCache cache) {
 
         try {
             Path path = gameDirPath();
@@ -46,7 +46,7 @@ public class ExileDatapackGenerator<T extends IGUID & ISerializable<T>> extends 
                     .replace("\\.\\", "\\"));
 
                 try {
-                    DataProvider.writeToPath(GSON, cache, entry.toJson(), target);
+                    IDataProvider.save(GSON, cache, entry.toJson(), target);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

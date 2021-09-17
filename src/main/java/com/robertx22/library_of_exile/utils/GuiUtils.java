@@ -1,11 +1,11 @@
 package com.robertx22.library_of_exile.utils;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,14 +13,14 @@ import java.util.List;
 
 public class GuiUtils {
 
-    public static void renderScaledText(MatrixStack matrix, int x, int y, double scale, String text, Formatting format) {
+    public static void renderScaledText(MatrixStack matrix, int x, int y, double scale, String text, TextFormatting format) {
 
         double antiScale = 1 / scale;
 
         RenderSystem.scaled(scale, scale, scale);
 
-        double textWidthMinus = MinecraftClient.getInstance().textRenderer.getWidth(text) / 2F * scale;
-        double textHeightMinus = MinecraftClient.getInstance().textRenderer.fontHeight * scale / 2;
+        double textWidthMinus = Minecraft.getInstance().font.width(text) / 2F * scale;
+        double textHeightMinus = Minecraft.getInstance().font.lineHeight * scale / 2;
 
         float xp = (float) (x - textWidthMinus);
         float yp = (float) (y - textHeightMinus);
@@ -28,17 +28,17 @@ public class GuiUtils {
         float xf = (float) (xp * antiScale);
         float yf = (float) (yp * antiScale);
 
-        MinecraftClient.getInstance().textRenderer.drawWithShadow(matrix, text, xf, yf, format.getColorValue());
+        Minecraft.getInstance().font.drawShadow(matrix, text, xf, yf, format.getColor());
         RenderSystem.scaled(antiScale, antiScale, antiScale);
 
     }
 
-    public static void renderTooltip(MatrixStack matrix, List<Text> tooltip, int mouseX, int mouseY) {
+    public static void renderTooltip(MatrixStack matrix, List<ITextComponent> tooltip, int mouseX, int mouseY) {
 
-        Screen screen = MinecraftClient.getInstance().currentScreen;
+        Screen screen = Minecraft.getInstance().screen;
 
         if (screen != null) {
-            screen.renderTooltip(matrix, tooltip, mouseX, mouseY);
+            screen.renderComponentTooltip(matrix, tooltip, mouseX, mouseY);
         }
 
     }

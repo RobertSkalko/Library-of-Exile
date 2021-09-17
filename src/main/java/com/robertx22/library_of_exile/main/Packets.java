@@ -1,57 +1,78 @@
 package com.robertx22.library_of_exile.main;
 
+import com.robertx22.library_of_exile.registers.PacketChannel;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class Packets {
 
     public static <T> void sendToClient(PlayerEntity player, MyPacket<T> packet) {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
         packet.saveToData(buf);
-        ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, packet.getIdentifier(), buf);
+
+        PacketChannel.INSTANCE.sendTo(
+            packet,
+            ((ServerPlayerEntity) player).connection.getConnection(),
+            NetworkDirection.PLAY_TO_CLIENT
+        );
     }
 
     public static <T> void sendToServer(MyPacket<T> packet) {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
         packet.saveToData(buf);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(packet.getIdentifier(), buf);
+
+        PacketChannel.INSTANCE.sendToServer(packet);
+
     }
 
     public static <T> void registerClientToServerPacket(MyPacket<T> packet) {
-        ServerSidePacketRegistry.INSTANCE.register(packet.getIdentifier(), packet);
+
+        PacketChannel.INSTANCE.registerMessage(
+            PacketChannel.CLIENT_ID++,
+            (Class<MyPacket<T>>) packet.getClass(), // todo
+            MyPacket::saveToData,
+            packet::loadFromDataUSETHIS,
+            MyPacket::handle
+        );
     }
 
     public static <T> void registerServerToClient(MyPacket<T> packet) {
-        ClientSidePacketRegistry.INSTANCE.register(packet.getIdentifier(), packet);
-    }
 
-    public static void sendToTracking(MyPacket msg, Entity entity) {
-        if (entity.world.isClient) {
+        //PacketChannel.INSTANCE.registerMessage()
 
-        } else {
-            sendToTracking(msg, entity.getBlockPos(), entity.world);
-        }
+        PacketChannel.INSTANCE.registerMessage(
+            PacketChannel.SERVER_ID++,
+            (Class<MyPacket<T>>) packet.getClass(), // todo
+            MyPacket::saveToData,
+            packet::loadFromDataUSETHIS,
+            MyPacket::handle
+        );
+
+        // ClientSidePacketRegistry.INSTANCE.register(packet.getIdentifier(), packet);
     }
 
     public static void sendToTracking(MyPacket msg, BlockPos pos, World world) {
-        if (world.isClient) {
+        PacketChannel.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), msg);
+    }
+
+    public static void sendToTracking(MyPacket msg, Entity en) {
+        if (en.level.isClientSide) {
 
         } else {
 
-            if (msg == null || world == null) {
+            if (msg == null) {
                 return;
             }
-            PlayerStream.watching(world, pos)
-                .forEach(x -> {
-                    Packets.sendToClient(x, msg);
-                });
+
+            PacketChannel.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> en), msg);
+
         }
     }
 

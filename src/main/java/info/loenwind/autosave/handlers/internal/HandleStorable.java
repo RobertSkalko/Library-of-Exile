@@ -9,9 +9,10 @@ import info.loenwind.autosave.handlers.IHandler;
 import info.loenwind.autosave.util.NBTAction;
 import info.loenwind.autosave.util.NullHelper;
 import info.loenwind.autosave.util.TypeUtil;
+import net.minecraft.nbt.CompoundNBT;
+
 import java.lang.reflect.Type;
 import java.util.Set;
-import net.minecraft.nbt.NbtCompound;
 
 /**
  * An {@link IHandler} that can (re-)store objects by storing their fields. The
@@ -43,24 +44,24 @@ public class HandleStorable<T extends Object> implements IHandler<T> {
     }
 
     @Override
-    public boolean store(Registry registry, Set<NBTAction> phase, NbtCompound nbt,
+    public boolean store(Registry registry, Set<NBTAction> phase, CompoundNBT nbt,
                          Type type, String name,
                          T object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
-        NbtCompound tag = new NbtCompound();
+        CompoundNBT tag = new CompoundNBT();
         StorableEngine.store(registry, phase, tag, object);
         nbt.put(name, tag);
         return true;
     }
 
     @Override
-    public T read(Registry registry, Set<NBTAction> phase, NbtCompound nbt, Type type,
+    public T read(Registry registry, Set<NBTAction> phase, CompoundNBT nbt, Type type,
                   String name,
                   T object) throws IllegalArgumentException, IllegalAccessException, InstantiationException, NoHandlerFoundException {
         if (nbt.contains(name)) {
             if (object == null) {
                 object = StorableEngine.instantiate(registry, type);
             }
-            NbtCompound tag = NullHelper.notnullM(nbt.getCompound(name), "CompoundNBT.getCompound()");
+            CompoundNBT tag = NullHelper.notnullM(nbt.getCompound(name), "CompoundNBT.getCompound()");
             StorableEngine.read(registry, phase, tag, object);
         }
         return object;

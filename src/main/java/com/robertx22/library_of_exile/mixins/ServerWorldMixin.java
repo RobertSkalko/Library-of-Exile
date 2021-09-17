@@ -1,9 +1,9 @@
 package com.robertx22.library_of_exile.mixins;
 
-import com.robertx22.library_of_exile.main.Components;
+import com.robertx22.library_of_exile.components.EntityInfoComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,16 +15,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ServerWorldMixin {
 
     @Shadow
-    private boolean inEntityTick;
+    boolean tickingEntities;
 
     // Call our load event after vanilla has loaded the entity
-    @Inject(method = "loadEntityUnchecked", at = @At("TAIL"))
+    @Inject(method = "add", at = @At("TAIL"))
     private void onLoadEntity(Entity entity, CallbackInfo ci) {
         try {
-            if (!this.inEntityTick) { // Copy vanilla logic, we cannot load entities while the game is ticking entities
+            if (!this.tickingEntities) { // Copy vanilla logic, we cannot load entities while the game is ticking entities
                 if (entity instanceof LivingEntity) {
-                    Components.INSTANCE.ENTITY_INFO.get(entity)
-                        .spawnInit();
+                    EntityInfoComponent.get((LivingEntity) entity)
+                        .spawnInit(entity);
                 }
             }
         } catch (Exception e) {

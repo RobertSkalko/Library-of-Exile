@@ -9,7 +9,7 @@ public class OnMobDamaged extends EventConsumer<ExileEvents.OnDamageEntity> {
     @Override
     public void accept(ExileEvents.OnDamageEntity event) {
 
-        Entity attacker = event.source.getAttacker();
+        Entity attacker = event.source.getEntity();
 
         EntityInfoComponent.get(event.mob)
             .getDamageStats()

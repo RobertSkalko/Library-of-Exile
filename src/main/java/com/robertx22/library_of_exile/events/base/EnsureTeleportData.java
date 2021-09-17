@@ -1,7 +1,7 @@
 package com.robertx22.library_of_exile.events.base;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.function.Consumer;
@@ -13,12 +13,12 @@ public class EnsureTeleportData {
     int ticksLeft;
     int ticks = 0;
     BlockPos whereShouldTeleport;
-    Identifier dimensionToTpTo;
+    ResourceLocation dimensionToTpTo;
     int tries = 0;
 
     int origTicksLeft;
 
-    public EnsureTeleportData(ServerPlayerEntity player, Consumer<EnsureTeleportData> action, int ticksLeft, BlockPos whereShouldTeleport, Identifier dimensionToTpTo) {
+    public EnsureTeleportData(ServerPlayerEntity player, Consumer<EnsureTeleportData> action, int ticksLeft, BlockPos whereShouldTeleport, ResourceLocation dimensionToTpTo) {
         this.player = player;
         this.action = action;
         this.ticksLeft = ticksLeft;

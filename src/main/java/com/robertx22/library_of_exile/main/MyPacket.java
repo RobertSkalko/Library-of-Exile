@@ -1,40 +1,48 @@
 package com.robertx22.library_of_exile.main;
 
-import net.fabricmc.fabric.api.network.PacketConsumer;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public abstract class MyPacket<T> implements PacketConsumer {
+import java.util.function.Supplier;
 
-    public abstract Identifier getIdentifier();
+public abstract class MyPacket<T> {
 
-    public abstract void loadFromData(PacketByteBuf tag);
+    public abstract ResourceLocation getIdentifier();
 
-    public abstract void saveToData(PacketByteBuf tag);
+    public abstract void loadFromData(PacketBuffer tag);
 
-    public abstract void onReceived(PacketContext ctx);
+    public abstract void saveToData(PacketBuffer tag);
+
+    public abstract void onReceived(NetworkEvent.Context ctx);
 
     public abstract MyPacket<T> newInstance();
 
-    @Override
-    public void accept(PacketContext ctx, PacketByteBuf buf) {
-
+    public final MyPacket loadFromDataUSETHIS(PacketBuffer buf) {
         MyPacket<T> data = newInstance();
-
         try {
             data.loadFromData(buf);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        ctx.getTaskQueue()
-            .execute(() -> {
-                try {
-                    data.onReceived(ctx);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        return data;
+
     }
+
+    public void handle(Supplier<NetworkEvent.Context> ctx) {
+
+        ctx.get()
+            .enqueueWork(
+                () -> {
+                    try {
+                        onReceived(ctx.get());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        ctx.get()
+            .setPacketHandled(true);
+    }
+
 }

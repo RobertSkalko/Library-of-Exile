@@ -1,18 +1,18 @@
 package com.robertx22.library_of_exile.tile_bases;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.robertx22.library_of_exile.main.Packets;
 import com.robertx22.library_of_exile.packets.RequestTilePacket;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 
-public abstract class BaseTileGui<Tile extends BlockEntity> extends Screen {
+public abstract class BaseTileGui<Tile extends TileEntity> extends Screen {
 
     public Tile tile;
-    public MinecraftClient mc;
+    public Minecraft mc;
 
     /**
      * Starting X position for the Gui. Inconsistent use for Gui backgrounds.
@@ -36,15 +36,15 @@ public abstract class BaseTileGui<Tile extends BlockEntity> extends Screen {
     }
 
     public BaseTileGui(Class<Tile> token, BlockPos pos, int x, int y) {
-        super(new LiteralText(""));
+        super(new StringTextComponent(""));
 
         xSize = x;
         ySize = y;
 
-        this.mc = MinecraftClient.getInstance();
+        this.mc = Minecraft.getInstance();
 
         if (pos != null) {
-            BlockEntity en = MinecraftClient.getInstance().world.getBlockEntity(pos);
+            TileEntity en = Minecraft.getInstance().level.getBlockEntity(pos);
             if (en != null) {
                 if (token.isAssignableFrom(en.getClass())) {
                     this.tile = (Tile) en;
@@ -62,7 +62,7 @@ public abstract class BaseTileGui<Tile extends BlockEntity> extends Screen {
 
         if (tile != null) {
             if (ticks % 10 == 0 || ticks < 2) {
-                Packets.sendToServer(new RequestTilePacket(tile.getPos()));
+                Packets.sendToServer(new RequestTilePacket(tile.getBlockPos()));
             }
         }
 

@@ -1,91 +1,74 @@
 package com.robertx22.library_of_exile.components;
 
-import com.robertx22.library_of_exile.main.Components;
+import com.robertx22.library_of_exile.components.forge.BaseProvider;
+import com.robertx22.library_of_exile.components.forge.BaseStorage;
+import com.robertx22.library_of_exile.components.forge.ICommonCap;
+import com.robertx22.library_of_exile.main.Ref;
 import com.robertx22.library_of_exile.utils.LoadSave;
-import nerdhub.cardinal.components.api.component.Component;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber
 public class EntityInfoComponent {
+    public static final ResourceLocation RESOURCE = new ResourceLocation(Ref.MODID, "entity_info");
+
+    @CapabilityInject(IEntityInfo.class)
+    public static final Capability<IEntityInfo> Data = null;
 
     public static IEntityInfo get(LivingEntity entity) {
-        return Components.INSTANCE.ENTITY_INFO.get(entity);
+        return entity.getCapability(Data)
+            .orElse(null);
     }
 
     private static final String DMG_STATS = "dmg_stats";
     private static final String SPAWN_POS = "spawn_pos";
     private static final String SPAWN_REASON = "spawn";
 
-    public interface IEntityInfo extends Component {
+    public interface IEntityInfo extends ICommonCap, BaseStorage<IEntityInfo> {
 
         EntityDmgStatsData getDamageStats();
 
         BlockPos getSpawnPos();
 
-        void spawnInit();
+        void spawnInit(Entity en);
 
         MySpawnReason getSpawnReason();
 
         void setSpawnReasonOnCreate(SpawnReason reason);
     }
 
-    public static class DefaultImpl implements IEntityInfo {
+    public static class Provider extends BaseProvider<IEntityInfo> {
 
-        LivingEntity entity;
+        @Override
+        public IEntityInfo newDefaultImpl() {
+            return new DefaultImpl();
+        }
+
+        @Override
+        public Capability<IEntityInfo> dataInstance() {
+            return Data;
+        }
+    }
+
+    public static class Storage implements BaseStorage<IEntityInfo> {
+
+    }
+
+    public static class DefaultImpl implements IEntityInfo {
 
         EntityDmgStatsData dmgStats = new EntityDmgStatsData();
 
         private BlockPos spawnPos;
         public MySpawnReason spawnReason = null;
 
-        public DefaultImpl(LivingEntity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public NbtCompound toTag(NbtCompound nbt) {
-
-            try {
-
-                if (dmgStats != null) {
-                    LoadSave.Save(dmgStats, nbt, DMG_STATS);
-                }
-                if (spawnPos != null) {
-                    nbt.putLong(SPAWN_POS, spawnPos.asLong());
-                }
-
-                nbt.putString(getSpawnReason().name(), SPAWN_REASON);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return nbt;
-
-        }
-
-        @Override
-        public void fromTag(NbtCompound nbt) {
-
-            try {
-                this.dmgStats = LoadSave.Load(EntityDmgStatsData.class, new EntityDmgStatsData(), nbt, DMG_STATS);
-                if (dmgStats == null) {
-                    dmgStats = new EntityDmgStatsData();
-                }
-                this.spawnPos = BlockPos.fromLong(nbt.getLong(SPAWN_POS));
-
-                String res = nbt.getString(SPAWN_REASON);
-                if (res != null && !res.isEmpty()) {
-                    this.spawnReason = MySpawnReason.valueOf(res);
-                } else {
-                    this.spawnReason = MySpawnReason.OTHER;
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        public DefaultImpl() {
 
         }
 
@@ -94,13 +77,13 @@ public class EntityInfoComponent {
             if (spawnPos != null) {
                 return spawnPos;
             }
-            return entity.getBlockPos();
+            return BlockPos.ZERO;
         }
 
         @Override
-        public void spawnInit() {
+        public void spawnInit(Entity entity) {
             if (spawnPos == null || (spawnPos.getX() == 0 && spawnPos.getY() == 0 && spawnPos.getZ() == 0)) {
-                this.spawnPos = entity.getBlockPos();
+                this.spawnPos = entity.blockPosition();
             }
         }
 
@@ -120,6 +103,48 @@ public class EntityInfoComponent {
         public EntityDmgStatsData getDamageStats() {
             return dmgStats;
         }
+
+        @Override
+        public CompoundNBT saveToNBT() {
+            CompoundNBT nbt = new CompoundNBT();
+            try {
+                if (dmgStats != null) {
+                    LoadSave.Save(dmgStats, nbt, DMG_STATS);
+                }
+                if (spawnPos != null) {
+                    nbt.putLong(SPAWN_POS, spawnPos.asLong());
+                }
+
+                nbt.putString(getSpawnReason().name(), SPAWN_REASON);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return nbt;
+        }
+
+        @Override
+        public void loadFromNBT(CompoundNBT nbt) {
+
+            try {
+                this.dmgStats = LoadSave.Load(EntityDmgStatsData.class, new EntityDmgStatsData(), nbt, DMG_STATS);
+                if (dmgStats == null) {
+                    dmgStats = new EntityDmgStatsData();
+                }
+                this.spawnPos = BlockPos.of(nbt.getLong(SPAWN_POS));
+
+                String res = nbt.getString(SPAWN_REASON);
+                if (res != null && !res.isEmpty()) {
+                    this.spawnReason = MySpawnReason.valueOf(res);
+                } else {
+                    this.spawnReason = MySpawnReason.OTHER;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }

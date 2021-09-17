@@ -3,12 +3,12 @@ package com.robertx22.library_of_exile.packets;
 import com.robertx22.library_of_exile.main.MyPacket;
 import com.robertx22.library_of_exile.main.Packets;
 import com.robertx22.library_of_exile.main.Ref;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class RequestTilePacket extends MyPacket<RequestTilePacket> {
 
@@ -23,26 +23,26 @@ public class RequestTilePacket extends MyPacket<RequestTilePacket> {
     }
 
     @Override
-    public Identifier getIdentifier() {
-        return new Identifier(Ref.MODID, "reqtiledata");
+    public ResourceLocation getIdentifier() {
+        return new ResourceLocation(Ref.MODID, "reqtiledata");
     }
 
     @Override
-    public void loadFromData(PacketByteBuf tag) {
+    public void loadFromData(PacketBuffer tag) {
         pos = tag.readBlockPos();
 
     }
 
     @Override
-    public void saveToData(PacketByteBuf tag) {
+    public void saveToData(PacketBuffer tag) {
         tag.writeBlockPos(pos);
 
     }
 
     @Override
-    public void onReceived(PacketContext ctx) {
-        PlayerEntity player = ctx.getPlayer();
-        BlockEntity tile = player.world.getBlockEntity(pos);
+    public void onReceived(Context ctx) {
+        PlayerEntity player = ctx.getSender();
+        TileEntity tile = player.level.getBlockEntity(pos);
         Packets.sendToClient(player, new TileUpdatePacket(tile));
     }
 

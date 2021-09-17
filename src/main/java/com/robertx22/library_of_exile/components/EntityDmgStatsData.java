@@ -5,7 +5,7 @@ import info.loenwind.autosave.annotations.Store;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class EntityDmgStatsData {
 
     public void onDamagedBy(Entity entity, float dmg) {
         if (entity instanceof PlayerEntity) {
-            String id = entity.getUuid()
+            String id = entity.getUUID()
                 .toString();
             map.put(id, dmg + map.getOrDefault(id, 0F));
         } else {

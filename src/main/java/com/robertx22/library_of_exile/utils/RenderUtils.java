@@ -1,29 +1,29 @@
 package com.robertx22.library_of_exile.utils;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 public class RenderUtils {
 
-    public static void render16Icon(MatrixStack matrix, Identifier tex, int x, int y) {
-        MinecraftClient.getInstance()
+    public static void render16Icon(MatrixStack matrix, ResourceLocation tex, int x, int y) {
+        Minecraft.getInstance()
             .getTextureManager()
-            .bindTexture(tex);
+            .bind(tex);
 
-        DrawableHelper.drawTexture(matrix, x, y, 0, 0, 16, 16, 16, 16);
+        AbstractGui.blit(matrix, x, y, 0, 0, 16, 16, 16, 16);
     }
 
     public static void renderStack(ItemStack stack, int x, int y) {
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
         RenderSystem.enableDepthTest();
         mc.getItemRenderer()
-            .renderInGui(stack, x, y);
+            .renderAndDecorateFakeItem(stack, x, y);
         mc.getItemRenderer()
-            .renderGuiItemOverlay(mc.textRenderer, stack, x, y);
+            .renderGuiItemDecorations(mc.font, stack, x, y);
 
         RenderSystem.disableDepthTest();
     }

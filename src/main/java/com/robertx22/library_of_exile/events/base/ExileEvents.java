@@ -1,11 +1,11 @@
 package com.robertx22.library_of_exile.events.base;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.loot.LootContext;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 
 public class ExileEvents {
@@ -46,10 +46,10 @@ public class ExileEvents {
     public static class OnChestLooted extends ExileEvent {
         public PlayerEntity player;
         public LootContext ctx;
-        public Inventory inventory;
+        public IInventory inventory;
         public BlockPos pos;
 
-        public OnChestLooted(PlayerEntity player, LootContext ctx, Inventory inventory, BlockPos pos) {
+        public OnChestLooted(PlayerEntity player, LootContext ctx, IInventory inventory, BlockPos pos) {
             this.player = player;
             this.ctx = ctx;
             this.inventory = inventory;
