@@ -9,7 +9,7 @@ public class MixinConnector implements IMixinConnector {
     public void connect() {
         System.out.println("Connecting " + Ref.MODID + " Mixins");
         Mixins.addConfiguration(
-            "library_of_exile/library_of_exile-mixins.json"
+            "library_of_exile-mixins.json"
         );
     }
 }

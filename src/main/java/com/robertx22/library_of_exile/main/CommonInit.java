@@ -14,7 +14,9 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import vazkii.patchouli.common.base.Patchouli;
 
 @Mod(Ref.MODID)
 public class CommonInit {
@@ -25,6 +27,7 @@ public class CommonInit {
             .getModEventBus();
 
         bus.addListener(this::commonSetupEvent);
+        bus.addListener(this::interMod);
 
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
             bus.addListener(this::clientSetup);
@@ -50,8 +53,18 @@ public class CommonInit {
         System.out.println("Library of Exile loaded.");
     }
 
+    public void interMod(InterModProcessEvent event) {
+        //TODO TEST
+        Patchouli clazz = Patchouli.instance;
+
+        System.out.println(clazz.getClass()
+            .toString() + " PATCHOULI IS LAODED YAY");
+
+    }
+
     public void commonSetupEvent(FMLCommonSetupEvent event) {
         Capabilities.reg();
+
     }
 
     public void clientSetup(final FMLClientSetupEvent event) {
