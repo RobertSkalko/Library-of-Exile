@@ -1,1 +1,0 @@
-MixinConnector: com.robertx22.library_of_exile.main.MixinConnector
