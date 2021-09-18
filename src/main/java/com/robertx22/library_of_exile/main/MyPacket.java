@@ -19,6 +19,7 @@ public abstract class MyPacket<T> {
     public abstract MyPacket<T> newInstance();
 
     public final MyPacket loadFromDataUSETHIS(PacketBuffer buf) {
+
         MyPacket<T> data = newInstance();
         try {
             data.loadFromData(buf);

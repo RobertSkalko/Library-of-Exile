@@ -18,6 +18,7 @@ public class MobEntityMixin {
 
     @Inject(method = "finalizeSpawn(Lnet/minecraft/world/IServerWorld;Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/entity/SpawnReason;Lnet/minecraft/entity/ILivingEntityData;Lnet/minecraft/nbt/CompoundNBT;)Lnet/minecraft/entity/ILivingEntityData;", at = @At("HEAD"))
     private void hook(IServerWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, ILivingEntityData entityData, CompoundNBT entityTag, CallbackInfoReturnable<ILivingEntityData> ci) {
+
         try {
             LivingEntity en = (LivingEntity) (Object) this;
             EntityInfoComponent.IEntityInfo info = EntityInfoComponent.get(en);
