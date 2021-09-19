@@ -8,7 +8,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class RequestTilePacket extends MyPacket<RequestTilePacket> {
 
@@ -40,8 +39,8 @@ public class RequestTilePacket extends MyPacket<RequestTilePacket> {
     }
 
     @Override
-    public void onReceived(Context ctx) {
-        PlayerEntity player = ctx.getSender();
+    public void onReceived(ExilePacketContext ctx) {
+        PlayerEntity player = ctx.getPlayer();
         TileEntity tile = player.level.getBlockEntity(pos);
         Packets.sendToClient(player, new TileUpdatePacket(tile));
     }

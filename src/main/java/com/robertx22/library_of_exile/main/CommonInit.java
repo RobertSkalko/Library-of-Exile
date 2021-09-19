@@ -16,7 +16,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import vazkii.patchouli.common.base.Patchouli;
 
 @Mod(Ref.MODID)
 public class CommonInit {
@@ -54,11 +53,6 @@ public class CommonInit {
     }
 
     public void interMod(InterModProcessEvent event) {
-        //TODO TEST
-        Patchouli clazz = Patchouli.instance;
-
-        System.out.println(clazz.getClass()
-            .toString() + " PATCHOULI IS LAODED YAY");
 
     }
 

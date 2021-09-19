@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.robertx22.library_of_exile.main.LibraryOfExile;
 import com.robertx22.library_of_exile.main.MyPacket;
 import com.robertx22.library_of_exile.main.Ref;
+import com.robertx22.library_of_exile.packets.ExilePacketContext;
 import com.robertx22.library_of_exile.registry.Database;
 import com.robertx22.library_of_exile.registry.ExileRegistryContainer;
 import com.robertx22.library_of_exile.registry.ExileRegistryType;
@@ -11,7 +12,6 @@ import com.robertx22.library_of_exile.registry.JsonExileRegistry;
 import com.robertx22.library_of_exile.registry.serialization.IByteBuf;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class EfficientRegistryPacket<T extends IByteBuf & JsonExileRegistry> ext
     }
 
     @Override
-    public void onReceived(Context ctx) {
+    public void onReceived(ExilePacketContext ctx) {
 
         ExileRegistryContainer reg = Database.getRegistry(type);
 

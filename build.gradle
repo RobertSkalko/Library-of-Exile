@@ -19,15 +19,12 @@ apply plugin: 'net.minecraftforge.gradle'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
-archivesBaseName = project.archives_base_name
+archivesBaseName = "${mod_archive_name}-${minecraft_version}"
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven { url 'https://ladysnake.jfrog.io/artifactory/mods' }
     maven { url '"https://maven.theillusivec4.top/' }
-    maven { url 'https://maven.terraformersmc.com/releases' }
-    maven { url "https://maven.shedaniel.me/" }
 }
 
 minecraft {
@@ -39,29 +36,29 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            arg "-mixin.config=library_of_exile-mixins.json"
+            arg "-mixin.config=${mod_id}-mixins.json"
             mods {
-                library_of_exile {
+                modid {
                     source sourceSets.main
                 }
             }
         }
         server {
             workingDirectory project.file('run')
-            arg "-mixin.config=library_of_exile-mixins.json"
+            arg "-mixin.config=${mod_id}-mixins.json"
             mods {
-                library_of_exile {
+                modid {
                     source sourceSets.main
                 }
             }
         }
         data {
             workingDirectory project.file('run')
-            arg "-mixin.config=library_of_exile-mixins.json"
+            arg "-mixin.config=${mod_id}-mixins.json"
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', '${mod_id}', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
-                examplemod {
+                modid {
                     source sourceSets.main
                 }
             }
@@ -132,8 +129,8 @@ dependencies {
 jar {
     manifest {
         attributes([
-                "MixinConnector": "com.robertx22.library_of_exile.main.MixinConnector",
-                "MixinConfigs"  : "library_of_exile-mixins.json"
+                "MixinConnector": "com.robertx22.${mod_id}.main.MixinConnector",
+                "MixinConfigs"  : "${mod_id}-mixins.json"
         ])
     }
 }
@@ -151,7 +148,7 @@ curseforge {
         changelogType = 'text'
         changelog = file('CHANGELOG.txt')
         addGameVersion("${project.minecraft_version}")
-        addGameVersion("Fabric")
+        addGameVersion("Forge")
         addGameVersion("Java 8")
 
         relations {
@@ -170,5 +167,5 @@ curseforge {
 
 apply plugin: 'org.spongepowered.mixin'
 mixin {
-    add sourceSets.main, "library_of_exile-refmap.json"
+    add sourceSets.main, "${mod_id}-refmap.json"
 }

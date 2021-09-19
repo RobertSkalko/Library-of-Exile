@@ -2,11 +2,11 @@ package com.robertx22.library_of_exile.packets.particles;
 
 import com.robertx22.library_of_exile.main.MyPacket;
 import com.robertx22.library_of_exile.main.Ref;
+import com.robertx22.library_of_exile.packets.ExilePacketContext;
 import com.robertx22.library_of_exile.utils.LoadSave;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class ParticlePacket extends MyPacket<ParticlePacket> {
 
@@ -43,8 +43,8 @@ public class ParticlePacket extends MyPacket<ParticlePacket> {
     }
 
     @Override
-    public void onReceived(Context ctx) {
-        data.type.activate(data, ctx.getSender().level);
+    public void onReceived(ExilePacketContext ctx) {
+        data.type.activate(data, ctx.getPlayer().level);
     }
 
     @Override

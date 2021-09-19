@@ -10,32 +10,47 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+
+import java.util.HashMap;
 
 public class Packets {
 
-    public static <T> void sendToClient(PlayerEntity player, MyPacket<T> packet) {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        packet.saveToData(buf);
+    static HashMap<Class<MyPacket>, SimpleChannel> channels = new HashMap<>();
 
-        PacketChannel.INSTANCE.sendTo(
-            packet,
-            ((ServerPlayerEntity) player).connection.getConnection(),
-            NetworkDirection.PLAY_TO_CLIENT
-        );
+    public static <T> void sendToClient(PlayerEntity player, MyPacket<T> packet) {
+        try {
+            PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+            packet.saveToData(buf);
+
+            channels.get(packet.getClass())
+                .sendTo(
+                    packet,
+                    ((ServerPlayerEntity) player).connection.getConnection(),
+                    NetworkDirection.PLAY_TO_CLIENT
+                );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static <T> void sendToServer(MyPacket<T> packet) {
-        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-        packet.saveToData(buf);
+        try {
+            PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
+            packet.saveToData(buf);
 
-        PacketChannel.INSTANCE.sendToServer(packet);
-
+            channels.get(packet.getClass())
+                .sendToServer(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static <T> void registerClientToServerPacket(MyPacket<T> packet) {
+    public static <T> void registerClientToServerPacket(SimpleChannel channel, MyPacket<T> packet, int id) {
+        channels.put((Class<MyPacket>) packet.getClass(), channel);
 
-        PacketChannel.INSTANCE.registerMessage(
-            PacketChannel.CLIENT_ID++,
+        channel.registerMessage(
+            id,
             (Class<MyPacket<T>>) packet.getClass(), // todo
             MyPacket::saveToData,
             packet::loadFromDataUSETHIS,
@@ -43,12 +58,11 @@ public class Packets {
         );
     }
 
-    public static <T> void registerServerToClient(MyPacket<T> packet) {
+    public static <T> void registerServerToClient(SimpleChannel channel, MyPacket<T> packet, int id) {
+        channels.put((Class<MyPacket>) packet.getClass(), channel);
 
-        //PacketChannel.INSTANCE.registerMessage()
-
-        PacketChannel.INSTANCE.registerMessage(
-            PacketChannel.SERVER_ID++,
+        channel.registerMessage(
+            id,
             (Class<MyPacket<T>>) packet.getClass(), // todo
             MyPacket::saveToData,
             packet::loadFromDataUSETHIS,

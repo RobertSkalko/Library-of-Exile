@@ -2,11 +2,11 @@ package com.robertx22.library_of_exile.packets.registry;
 
 import com.robertx22.library_of_exile.main.MyPacket;
 import com.robertx22.library_of_exile.main.Ref;
+import com.robertx22.library_of_exile.packets.ExilePacketContext;
 import com.robertx22.library_of_exile.registry.RegistryPackets;
 import com.robertx22.library_of_exile.registry.SyncTime;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent;
 
 public class TellClientToRegisterFromPackets extends MyPacket<TellClientToRegisterFromPackets> {
 
@@ -24,7 +24,7 @@ public class TellClientToRegisterFromPackets extends MyPacket<TellClientToRegist
     }
 
     @Override
-    public void onReceived(NetworkEvent.Context ctx) {
+    public void onReceived(ExilePacketContext ctx) {
         RegistryPackets.registerAll(SyncTime.ON_LOGIN);
     }
 

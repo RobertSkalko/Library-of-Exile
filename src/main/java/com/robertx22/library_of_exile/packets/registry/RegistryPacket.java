@@ -6,6 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import com.robertx22.library_of_exile.main.LibraryOfExile;
 import com.robertx22.library_of_exile.main.MyPacket;
 import com.robertx22.library_of_exile.main.Ref;
+import com.robertx22.library_of_exile.packets.ExilePacketContext;
 import com.robertx22.library_of_exile.registry.ExileRegistryType;
 import com.robertx22.library_of_exile.registry.JsonExileRegistry;
 import com.robertx22.library_of_exile.registry.ListStringData;
@@ -15,7 +16,6 @@ import com.robertx22.library_of_exile.utils.Watch;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class RegistryPacket extends MyPacket<RegistryPacket> {
     }
 
     @Override
-    public void onReceived(Context ctx) {
+    public void onReceived(ExilePacketContext ctx) {
 
         if (data.getList()
             .isEmpty()) {
