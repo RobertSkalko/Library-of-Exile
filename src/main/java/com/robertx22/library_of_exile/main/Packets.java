@@ -1,6 +1,5 @@
 package com.robertx22.library_of_exile.main;
 
-import com.robertx22.library_of_exile.registers.PacketChannel;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -74,7 +73,8 @@ public class Packets {
     }
 
     public static void sendToTracking(MyPacket msg, BlockPos pos, World world) {
-        PacketChannel.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), msg);
+        channels.get(msg.getIdentifier())
+            .send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)), msg);
     }
 
     public static void sendToTracking(MyPacket msg, Entity en) {
@@ -86,7 +86,8 @@ public class Packets {
                 return;
             }
 
-            PacketChannel.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> en), msg);
+            channels.get(msg.getIdentifier())
+                .send(PacketDistributor.TRACKING_ENTITY.with(() -> en), msg);
 
         }
     }
