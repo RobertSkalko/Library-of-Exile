@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -16,14 +17,14 @@ import java.util.HashMap;
 
 public class Packets {
 
-    static HashMap<Class<MyPacket>, SimpleChannel> channels = new HashMap<>();
+    static HashMap<ResourceLocation, SimpleChannel> channels = new HashMap<>();
 
     public static <T> void sendToClient(PlayerEntity player, MyPacket<T> packet) {
         try {
             PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
             packet.saveToData(buf);
 
-            channels.get(packet.getClass())
+            channels.get(packet.getIdentifier())
                 .sendTo(
                     packet,
                     ((ServerPlayerEntity) player).connection.getConnection(),
@@ -39,7 +40,7 @@ public class Packets {
             PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
             packet.saveToData(buf);
 
-            channels.get(packet.getClass())
+            channels.get(packet.getIdentifier())
                 .sendToServer(packet);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,7 +48,7 @@ public class Packets {
     }
 
     public static <T> void registerClientToServerPacket(SimpleChannel channel, MyPacket<T> packet, int id) {
-        channels.put((Class<MyPacket>) packet.getClass(), channel);
+        channels.put(packet.getIdentifier(), channel);
 
         channel.registerMessage(
             id,
@@ -59,7 +60,7 @@ public class Packets {
     }
 
     public static <T> void registerServerToClient(SimpleChannel channel, MyPacket<T> packet, int id) {
-        channels.put((Class<MyPacket>) packet.getClass(), channel);
+        channels.put(packet.getIdentifier(), channel);
 
         channel.registerMessage(
             id,
