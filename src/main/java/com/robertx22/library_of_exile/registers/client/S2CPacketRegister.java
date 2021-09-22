@@ -13,7 +13,7 @@ public class S2CPacketRegister {
 
     public static void register() {
 
-        int id = 0;
+        int id = 100;
 
         Packets.registerServerToClient(PacketChannel.INSTANCE, new SyncPlayerCapToClient(), id++);
         Packets.registerServerToClient(PacketChannel.INSTANCE, new EfficientRegistryPacket<>(), id++);

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.robertx22.library_of_exile.registry.serialization.ISerializable;
 import net.minecraft.data.DirectoryCache;
-import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -25,14 +25,14 @@ public abstract class BaseDatapackGenerator<T extends IGUID & ISerializable<T>> 
         this.list = list;
         this.category = category;
         try {
-            cache = new DirectoryCache(FMLLoader.getGamePath(), "datagencache");
+            cache = new DirectoryCache(FMLPaths.GAMEDIR.get(), "datagencache");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     protected Path gameDirPath() {
-        return FMLLoader.getGamePath();
+        return FMLPaths.GAMEDIR.get();
     }
 
     protected Path movePath(Path target) {

@@ -8,7 +8,7 @@ public class C2SPacketRegister {
 
     public static void register() {
 
-        int id = 0;
+        int id = 500;
         Packets.registerClientToServerPacket(PacketChannel.INSTANCE, new RequestTilePacket(), id++);
 
     }

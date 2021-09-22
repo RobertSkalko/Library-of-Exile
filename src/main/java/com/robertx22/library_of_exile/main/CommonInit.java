@@ -4,6 +4,7 @@ import com.robertx22.library_of_exile.components.OnMobDamaged;
 import com.robertx22.library_of_exile.events.base.EventConsumer;
 import com.robertx22.library_of_exile.events.base.ExileEvents;
 import com.robertx22.library_of_exile.packets.registry.TellClientToRegisterFromPackets;
+import com.robertx22.library_of_exile.registers.client.S2CPacketRegister;
 import com.robertx22.library_of_exile.registers.common.C2SPacketRegister;
 import com.robertx22.library_of_exile.registry.Database;
 import com.robertx22.library_of_exile.registry.SyncTime;
@@ -46,6 +47,7 @@ public class CommonInit {
         });
 
         C2SPacketRegister.register();
+        S2CPacketRegister.register();
 
         ExileEvents.DAMAGE_AFTER_CALC.register(new OnMobDamaged());
 
