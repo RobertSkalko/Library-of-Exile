@@ -51,9 +51,12 @@ public class PlayerCapabilities {
     }
 
     public static IPlayerCap get(PlayerEntity player, String id) {
-        Capability<? extends IPlayerCap> cap = caps.get(id);
-        return player.getCapability(cap)
-            .orElse(null);
+        if (caps.containsKey(id)) {
+            Capability<? extends IPlayerCap> cap = caps.get(id);
+            return player.getCapability(cap)
+                .orElse(null);
+        }
+        return null;
     }
 
 }

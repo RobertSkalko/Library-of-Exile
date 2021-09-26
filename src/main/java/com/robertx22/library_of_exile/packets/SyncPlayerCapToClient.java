@@ -1,6 +1,7 @@
 package com.robertx22.library_of_exile.packets;
 
 import com.robertx22.library_of_exile.components.PlayerCapabilities;
+import com.robertx22.library_of_exile.components.forge.IPlayerCap;
 import com.robertx22.library_of_exile.main.MyPacket;
 import com.robertx22.library_of_exile.main.Ref;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,8 +50,11 @@ public class SyncPlayerCapToClient extends MyPacket<SyncPlayerCapToClient> {
             PlayerEntity player = ctx.getPlayer();
 
             if (player.level.isClientSide) { // just an extra check
-                PlayerCapabilities.get(player, capid)
-                    .loadFromNBT(nbt);
+
+                IPlayerCap cap = PlayerCapabilities.get(player, capid);
+                if (cap != null) {
+                    cap.loadFromNBT(nbt);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

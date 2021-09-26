@@ -60,7 +60,6 @@ public class CommonInit {
 
     public void commonSetupEvent(FMLCommonSetupEvent event) {
         Capabilities.reg();
-
     }
 
     public void clientSetup(final FMLClientSetupEvent event) {

@@ -11,10 +11,11 @@ public class OnMobDamaged extends EventConsumer<ExileEvents.OnDamageEntity> {
 
         Entity attacker = event.source.getEntity();
 
-        EntityInfoComponent.get(event.mob)
-            .getDamageStats()
-            .onDamagedBy(attacker, event.damage);
-
+        EntityInfoComponent.IEntityInfo comp = EntityInfoComponent.get(event.mob);
+        if (comp != null) {
+            comp.getDamageStats()
+                .onDamagedBy(attacker, event.damage);
+        }
     }
 
     // call after my main mod changes damage
