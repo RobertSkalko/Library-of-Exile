@@ -150,14 +150,11 @@ curseforge {
         addGameVersion("${project.minecraft_version}")
         addGameVersion("Forge")
         addGameVersion("Java 8")
-
-        relations {
-            //  requiredDependency 'fabric-api'
-        }
+      
         mainArtifact(jar)
 
         afterEvaluate {
-            uploadTask.dependsOn("remapJar")
+            uploadTask.dependsOn("jar")
         }
     }
     options {

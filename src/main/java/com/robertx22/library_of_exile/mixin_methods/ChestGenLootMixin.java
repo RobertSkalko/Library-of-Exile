@@ -5,7 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
-import net.minecraft.tileentity.ChestTileEntity;
+import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -13,28 +13,34 @@ import net.minecraft.world.World;
 public class ChestGenLootMixin {
 
     public static void onLootGen(IInventory inventory, LootContext context) {
-        TileEntity chest = null;
-        BlockPos pos = null;
 
-        if (inventory instanceof TileEntity) {
-            chest = (TileEntity) inventory;
-        }
+        try {
+            if (context.hasParam(LootParameters.THIS_ENTITY) &&
+                context.hasParam(LootParameters.ORIGIN)
+                && context.getParamOrNull(LootParameters.THIS_ENTITY) instanceof PlayerEntity) {
 
-        if (context.hasParam(LootParameters.THIS_ENTITY) && context.getParamOrNull(LootParameters.THIS_ENTITY) instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) context.getParamOrNull(LootParameters.THIS_ENTITY);
-            World world = null;
-            if (chest != null) {
-                world = chest.getLevel();
-                pos = chest.getBlockPos();
+                TileEntity chest = null;
+                BlockPos pos = new BlockPos(context.getParamOrNull(LootParameters.ORIGIN));
+
+                PlayerEntity player = (PlayerEntity) context.getParamOrNull(LootParameters.THIS_ENTITY);
+                World world = player.level;
+
+                if (inventory instanceof TileEntity) {
+                    chest = (TileEntity) inventory;
+                }
+                if (chest == null) {
+                    chest = world.getBlockEntity(pos);
+                }
+                if (world == null) {
+                    return;
+                }
+                if (chest instanceof LockableLootTileEntity) {
+                    ExileEvents.ON_CHEST_LOOTED.callEvents(new ExileEvents.OnChestLooted(player, context, inventory, pos));
+                }
+
             }
-            if (world == null) {
-                return;
-            }
-
-            if (inventory instanceof ChestTileEntity) {
-                ExileEvents.ON_CHEST_LOOTED.callEvents(new ExileEvents.OnChestLooted(player, context, inventory, pos));
-            }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

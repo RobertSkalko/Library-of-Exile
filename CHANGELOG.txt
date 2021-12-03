@@ -1,2 +1,3 @@
-v.1.0.15
-try fix server crash 
+1.2.1
+
+Should fix lootr compatibility
