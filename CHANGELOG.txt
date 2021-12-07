@@ -1,3 +1,3 @@
-1.2.1
+1.2.2
 
-Should fix lootr compatibility
+Extra features for my main mod

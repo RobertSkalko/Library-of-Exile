@@ -1,12 +1,17 @@
 package com.robertx22.library_of_exile.events.base;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExileEvents {
 
@@ -16,6 +21,7 @@ public class ExileEvents {
     public static ExileEventCaller<OnPlayerDeath> PLAYER_DEATH = new ExileEventCaller<>();
     public static ExileEventCaller<OnMobKilledByPlayer> MOB_KILLED_BY_PLAYER = new ExileEventCaller<>();
     public static ExileEventCaller<OnSetupLootChance> SETUP_LOOT_CHANCE = new ExileEventCaller<>();
+    public static ExileEventCaller<PlayerMineOreEvent> PLAYER_MINE_ORE = new ExileEventCaller<>();
 
     public static ExileEventCaller<OnDamageEntity> DAMAGE_BEFORE_CALC = new ExileEventCaller<>();
     public static ExileEventCaller<OnDamageEntity> DAMAGE_AFTER_CALC = new ExileEventCaller<>();
@@ -62,6 +68,21 @@ public class ExileEvents {
 
         public OnCheckIsDevToolsRunning() {
 
+        }
+    }
+
+    // it's called when player mines any block that doesn't drop itself.. Not just ores
+    public static class PlayerMineOreEvent extends ExileEvent {
+
+        public BlockState state;
+        public PlayerEntity player;
+        public BlockPos pos;
+        public List<ItemStack> itemsToAddToDrop = new ArrayList<>();
+
+        public PlayerMineOreEvent(BlockState state, PlayerEntity player, BlockPos pos) {
+            this.state = state;
+            this.player = player;
+            this.pos = pos;
         }
     }
 

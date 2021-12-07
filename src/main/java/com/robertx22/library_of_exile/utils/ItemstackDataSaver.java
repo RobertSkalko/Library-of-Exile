@@ -1,11 +1,12 @@
 package com.robertx22.library_of_exile.utils;
 
+import com.robertx22.library_of_exile.registry.IGUID;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 import java.util.function.Supplier;
 
-public class ItemstackDataSaver<T> {
+public class ItemstackDataSaver<T> implements IGUID {
 
     String id;
     Class<T> clazz;
@@ -16,6 +17,20 @@ public class ItemstackDataSaver<T> {
         this.clazz = clazz;
         this.constructor = constructor;
 
+        if (AllItemStackSavers.ALL.stream()
+            .noneMatch(x -> x.GUID()
+                .equals(GUID()))) {
+            AllItemStackSavers.ALL.add(this);
+        }
+
+    }
+
+    public Supplier<T> getConstructor() {
+        return constructor;
+    }
+
+    public Class<T> getClazz() {
+        return clazz;
     }
 
     public boolean has(ItemStack stack) {
@@ -39,9 +54,14 @@ public class ItemstackDataSaver<T> {
     }
 
     public void saveTo(ItemStack stack, T object) {
+        this.saveToObject(stack, object);
+    }
+
+    public void saveToObject(ItemStack stack, Object object) {
         if (stack == null) {
             return;
         }
+
         if (!stack.hasTag()) {
             stack.setTag(new CompoundNBT());
         }
@@ -49,5 +69,10 @@ public class ItemstackDataSaver<T> {
             LoadSave.Save(object, stack.getTag(), id);
         }
 
+    }
+
+    @Override
+    public String GUID() {
+        return id;
     }
 }
