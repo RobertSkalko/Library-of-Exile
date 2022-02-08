@@ -9,20 +9,32 @@ import net.minecraft.world.World;
 
 public class SoundUtils {
 
-    public static void playSound(Entity entity, SoundEvent sound, float volume, float pitch) {
-        //this should be universal
-        entity.level.playSound(null, entity.blockPosition(), sound, SoundCategory.PLAYERS, volume, pitch);
-
+    public static void playSound(Entity en, SoundEvent event) {
+        playSound(en, event, 1, 1);
     }
 
-    public static void playSound(World world, BlockPos pos, SoundEvent sound, float volume, float pitch) {
-        //this should be universal
-        world.playSound(null, pos, sound, SoundCategory.PLAYERS, volume, pitch);
+    public static void playSound(World world, BlockPos pos, SoundEvent event) {
+        playSound(world, pos, event, 1, 1);
     }
 
-    public static void playSound(World world, BlockPos pos, SoundEvent sound, SoundCategory cat, float volume, float pitch) {
-        //this should be universal
-        world.playSound(null, pos, sound, cat, volume, pitch);
+    public static void playSound(Entity en, SoundEvent event, float volume, float pitch) {
+        if (!en.level.isClientSide) {
+            en.level.playSound(null, en.getX(), en.getY(), en.getZ(), event, SoundCategory.PLAYERS, volume, pitch);
+        } else {
+            en.level.playLocalSound(en.getX(), en.getY(), en.getZ(), event, SoundCategory.PLAYERS, volume, pitch, true);
+        }
+    }
+
+    public static void playSound(World world, BlockPos pos, SoundEvent event, float volume, float pitch) {
+        playSound(world, pos, event, SoundCategory.PLAYERS, volume, pitch);
+    }
+
+    public static void playSound(World world, BlockPos pos, SoundEvent event, SoundCategory cat, float volume, float pitch) {
+        if (!world.isClientSide) {
+            world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), event, cat, volume, pitch);
+        } else {
+            world.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), event, cat, volume, pitch, true);
+        }
     }
 
     public static void ding(World world, BlockPos pos) {
