@@ -202,6 +202,10 @@ public class ExileRegistryContainer<C extends ExileRegistry> {
         return this.serializables.get(key.GUID());
     }
 
+    public C getFromSerializables(String key) {
+        return this.serializables.get(key);
+    }
+
     boolean accessedEarly = false;
 
     public C get(String guid) {

@@ -33,14 +33,13 @@ public class GuiUtils {
 
     }
 
-    public static void renderTooltip(MatrixStack matrix, List<ITextComponent> tooltip, int mouseX, int mouseY) {
+    public static <T extends ITextComponent> void renderTooltip(MatrixStack matrix, List<T> tooltip, int mouseX, int mouseY) {
+        renderComponentTooltip(matrix, tooltip, mouseX, mouseY);
+    }
 
+    static void renderComponentTooltip(MatrixStack matrix, List<? extends ITextComponent> tooltip, int x, int y) {
         Screen screen = Minecraft.getInstance().screen;
-
-        if (screen != null) {
-            screen.renderComponentTooltip(matrix, tooltip, mouseX, mouseY);
-        }
-
+        screen.renderWrappedToolTip(matrix, tooltip, x, y, Minecraft.getInstance().font);
     }
 
     public static boolean isInRectPoints(Point guiPos, Point size, Point mousePos) {

@@ -9,6 +9,14 @@ import net.minecraft.world.World;
 
 public class SoundUtils {
 
+    public static void playSound(Entity en, SavedSound event) {
+        playSound(en, event.sound, event.volume, event.pitch);
+    }
+
+    public static void playSound(World world, BlockPos pos, SavedSound event) {
+        playSound(world, pos, event.sound, event.volume, event.pitch);
+    }
+
     public static void playSound(Entity en, SoundEvent event) {
         playSound(en, event, 1, 1);
     }
